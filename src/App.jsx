@@ -9,6 +9,7 @@ import {
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Toaster } from "react-hot-toast";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Pages - Auth
 import Login from "./pages/auth/login";
@@ -179,6 +180,9 @@ export default function App() {
           },
         }}
       />
+
+      {/* Speed Insights */}
+      <SpeedInsights />
 
       <Routes>
         {/* 🏠 ROOT - Redirect based on auth status */}
