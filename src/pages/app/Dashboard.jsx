@@ -21,6 +21,7 @@ import {
 import { logoutAPI } from "../../api/auth";
 import AdModal from "../../components/AdModal";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -390,7 +391,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen">
+      <div className={cn('flex', 'flex-col', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'min-h-screen')}>
         <motion.div
           animate={{ rotate: 360, scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -411,7 +412,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen overflow-hidden text-white">
+    <div className={cn('relative', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'min-h-screen', 'overflow-hidden', 'text-white')}>
       
       {/* Sparkles Animation Overlay */}
       <AnimatePresence>
@@ -420,7 +421,7 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="z-50 fixed inset-0 pointer-events-none"
+            className={cn('z-50', 'fixed', 'inset-0', 'pointer-events-none')}
           >
             {[...Array(80)].map((_, i) => (
               <motion.div
@@ -428,7 +429,7 @@ export default function Dashboard() {
                 initial={{ scale: 0, x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, opacity: 1, rotate: 0 }}
                 animate={{ scale: [0, 1.5, 0], opacity: [1, 0.5, 0], y: [null, -150], rotate: [0, 180, 360] }}
                 transition={{ duration: 1.5, delay: Math.random() * 0.5 }}
-                className="absolute rounded-full"
+                className={cn('absolute', 'rounded-full')}
                 style={{ 
                   width: Math.random() * 6 + 2 + "px", 
                   height: Math.random() * 6 + 2 + "px",
@@ -442,16 +443,16 @@ export default function Dashboard() {
       </AnimatePresence>
 
       {/* Animated Background with floating particles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="-top-40 -right-40 absolute bg-purple-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse mix-blend-multiply filter"></div>
-        <div className="-bottom-40 -left-40 absolute bg-blue-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse delay-1000 mix-blend-multiply filter"></div>
-        <div className="top-1/2 left-1/2 absolute bg-pink-600 opacity-10 blur-3xl rounded-full w-96 h-96 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-2000 transform mix-blend-multiply filter"></div>
+      <div className={cn('fixed', 'inset-0', 'overflow-hidden', 'pointer-events-none')}>
+        <div className={cn('-top-40', '-right-40', 'absolute', 'bg-purple-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('-bottom-40', '-left-40', 'absolute', 'bg-blue-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'delay-1000', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-pink-600', 'opacity-10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000', 'transform', 'mix-blend-multiply', 'filter')}></div>
         
         {/* Floating particles */}
         {[...Array(50)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full"
+            className={cn('absolute', 'rounded-full')}
             style={{
               width: Math.random() * 4 + 1 + "px",
               height: Math.random() * 4 + 1 + "px",
@@ -474,30 +475,30 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="z-10 relative mx-auto p-6 max-w-7xl">
+      <div className={cn('z-10', 'relative', 'mx-auto', 'p-6', 'max-w-7xl')}>
         {/* Header */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white/5 shadow-2xl backdrop-blur-xl mb-8 p-6 border border-white/10 rounded-2xl"
+          className={cn('bg-white/5', 'shadow-2xl', 'backdrop-blur-xl', 'mb-8', 'p-6', 'border', 'border-white/10', 'rounded-2xl')}
         >
-          <div className="flex lg:flex-row flex-col justify-between items-center gap-4">
-            <div className="flex items-center gap-3">
+          <div className={cn('flex', 'lg:flex-row', 'flex-col', 'justify-between', 'items-center', 'gap-4')}>
+            <div className={cn('flex', 'items-center', 'gap-3')}>
               <motion.div
                 whileHover={{ rotate: 15, scale: 1.1 }}
-                className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-xl"
+                className={cn('bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'p-2', 'rounded-xl')}
               >
                 <MessageCircle size={28} />
               </motion.div>
               <div>
-                <h1 className="bg-clip-text bg-gradient-to-r from-white to-gray-400 font-bold text-transparent text-3xl">
+                <h1 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-gray-400', 'font-bold', 'text-transparent', 'text-3xl')}>
                   Welcome back, {user?.firstName || "User"}! 👋
                 </h1>
-                <p className="text-gray-400 text-sm">Manage your anonymous messages</p>
+                <p className={cn('text-gray-400', 'text-sm')}>Manage your anonymous messages</p>
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className={cn('flex', 'flex-wrap', 'justify-center', 'gap-3')}>
               {/* Plan Badge with Coins */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -509,11 +510,11 @@ export default function Dashboard() {
                     : "bg-gray-600"
                 }`}
               >
-                {user?.plan === "premium" && <Crown size={14} className="text-yellow-300 animate-pulse" />}
+                {user?.plan === "premium" && <Crown size={14} className={cn('text-yellow-300', 'animate-pulse')} />}
                 {user?.plan === "pro" && <Zap size={14} />}
                 <span className="capitalize">{user?.plan || "free"}</span>
                 {user?.plan === "pro" && (
-                  <span className="flex items-center gap-1 bg-white/20 ml-1 px-1.5 py-0.5 rounded text-xs">
+                  <span className={cn('flex', 'items-center', 'gap-1', 'bg-white/20', 'ml-1', 'px-1.5', 'py-0.5', 'rounded', 'text-xs')}>
                     <Coins size={10} />
                     {user?.coins || 0}
                   </span>
@@ -525,7 +526,7 @@ export default function Dashboard() {
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/profile-settings")}
-                className="flex items-center gap-2 bg-purple-500/20 hover:bg-purple-500/30 px-4 py-2 border border-purple-500/30 rounded-xl text-purple-400 transition-all duration-200"
+                className={cn('flex', 'items-center', 'gap-2', 'bg-purple-500/20', 'hover:bg-purple-500/30', 'px-4', 'py-2', 'border', 'border-purple-500/30', 'rounded-xl', 'text-purple-400', 'transition-all', 'duration-200')}
               >
                 <Settings size={18} />
                 Edit Profile
@@ -536,7 +537,7 @@ export default function Dashboard() {
                 whileTap={{ scale: 0.95 }}
                 onClick={refreshData}
                 disabled={refreshing}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl transition-all duration-200"
+                className={cn('flex', 'items-center', 'gap-2', 'bg-white/10', 'hover:bg-white/20', 'px-4', 'py-2', 'rounded-xl', 'transition-all', 'duration-200')}
               >
                 <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
                 Refresh
@@ -546,7 +547,7 @@ export default function Dashboard() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLogout}
-                className="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 px-5 py-2 border border-red-500/30 rounded-xl text-red-400 transition-all duration-200"
+                className={cn('flex', 'items-center', 'gap-2', 'bg-red-500/20', 'hover:bg-red-500/30', 'px-5', 'py-2', 'border', 'border-red-500/30', 'rounded-xl', 'text-red-400', 'transition-all', 'duration-200')}
               >
                 <LogOut size={18} />
                 Logout
@@ -559,7 +560,7 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 mb-8"
+          className={cn('gap-4', 'grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-5', 'mb-8')}
         >
           {[
             { label: "Total Messages", value: stats.total, icon: Inbox, color: "from-blue-500 to-cyan-500", emoji: "📩" },
@@ -583,15 +584,15 @@ export default function Dashboard() {
               <motion.div
                 animate={{ y: [0, -8, 0], rotate: [0, 10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="-top-2 -right-2 absolute opacity-20 text-4xl"
+                className={cn('-top-2', '-right-2', 'absolute', 'opacity-20', 'text-4xl')}
               >
                 {stat.emoji}
               </motion.div>
               
-              <div className="flex justify-between items-start">
+              <div className={cn('flex', 'justify-between', 'items-start')}>
                 <div>
-                  <p className="font-medium text-white/80 text-sm">{stat.label}</p>
-                  <p className="mt-1 font-bold text-2xl">{stat.value}</p>
+                  <p className={cn('font-medium', 'text-white/80', 'text-sm')}>{stat.label}</p>
+                  <p className={cn('mt-1', 'font-bold', 'text-2xl')}>{stat.value}</p>
                 </div>
                 <stat.icon size={24} className="text-white/50" />
               </div>
@@ -599,7 +600,7 @@ export default function Dashboard() {
               {hoveredCard === index && (
                 <motion.div
                   layoutId="cardGlow"
-                  className="absolute inset-0 rounded-2xl pointer-events-none"
+                  className={cn('absolute', 'inset-0', 'rounded-2xl', 'pointer-events-none')}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   style={{ boxShadow: `0 0 30px rgba(139,92,246,0.5)` }}
@@ -613,19 +614,19 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="bg-white/5 backdrop-blur-xl mb-8 p-6 border border-white/10 rounded-2xl"
+          className={cn('bg-white/5', 'backdrop-blur-xl', 'mb-8', 'p-6', 'border', 'border-white/10', 'rounded-2xl')}
         >
-          <div className="flex lg:flex-row flex-col justify-between items-start lg:items-center gap-6">
-            <div className="flex items-center gap-4">
+          <div className={cn('flex', 'lg:flex-row', 'flex-col', 'justify-between', 'items-start', 'lg:items-center', 'gap-6')}>
+            <div className={cn('flex', 'items-center', 'gap-4')}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="flex justify-center items-center bg-gradient-to-br from-purple-500 to-pink-500 rounded-full w-16 h-16"
+                className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'rounded-full', 'w-16', 'h-16')}
               >
                 {user?.profilePic ? (
                   <img 
                     src={getImageUrl(user.profilePic)} 
                     alt="Profile" 
-                    className="rounded-full w-full h-full object-cover"
+                    className={cn('rounded-full', 'w-full', 'h-full', 'object-cover')}
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.style.display = 'none';
@@ -636,29 +637,29 @@ export default function Dashboard() {
                 )}
               </motion.div>
               <div>
-                <h2 className="font-bold text-2xl">
+                <h2 className={cn('font-bold', 'text-2xl')}>
                   {user?.firstName || "User"} {user?.lastName || ""}
                 </h2>
-                <div className="flex items-center gap-2 mt-1">
+                <div className={cn('flex', 'items-center', 'gap-2', 'mt-1')}>
                   <Mail size={14} className="text-gray-400" />
                   <p className="text-gray-400">{user?.email || "No email"}</p>
                 </div>
-                <div className="flex items-center gap-2 mt-1">
+                <div className={cn('flex', 'items-center', 'gap-2', 'mt-1')}>
                   <Calendar size={14} className="text-gray-400" />
-                  <p className="text-gray-400 text-sm">
+                  <p className={cn('text-gray-400', 'text-sm')}>
                     Joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "recently"}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className={cn('flex', 'flex-wrap', 'gap-3')}>
               {!user?.isPremium && user?.plan !== "pro" && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/premium")}
-                  className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg px-6 py-3 rounded-xl font-bold text-black"
+                  className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-yellow-400', 'to-orange-500', 'shadow-lg', 'px-6', 'py-3', 'rounded-xl', 'font-bold', 'text-black')}
                 >
                   <Crown size={18} />
                   Upgrade to Premium ⭐
@@ -670,7 +671,7 @@ export default function Dashboard() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/premium")}
-                  className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg px-6 py-3 rounded-xl font-bold text-white"
+                  className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'shadow-lg', 'px-6', 'py-3', 'rounded-xl', 'font-bold', 'text-white')}
                 >
                   <Crown size={18} />
                   Upgrade to Premium
@@ -680,20 +681,20 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-6">
-            <label className="block mb-2 font-medium text-gray-300 text-sm">
+            <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
               Your Public Profile Link
             </label>
-            <div className="flex gap-2">
+            <div className={cn('flex', 'gap-2')}>
               <input
                 value={publicLink}
                 readOnly
-                className="flex-1 bg-black/40 p-3 border border-white/10 focus:border-purple-500 rounded-xl focus:outline-none transition-all duration-200"
+                className={cn('flex-1', 'bg-black/40', 'p-3', 'border', 'border-white/10', 'focus:border-purple-500', 'rounded-xl', 'focus:outline-none', 'transition-all', 'duration-200')}
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={copyLink}
-                className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 px-6 rounded-xl font-medium"
+                className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-green-500', 'to-emerald-500', 'px-6', 'rounded-xl', 'font-medium')}
               >
                 {copied ? <Check size={18} /> : <Copy size={18} />}
                 {copied ? "Copied" : "Copy"}
@@ -712,7 +713,7 @@ export default function Dashboard() {
                     copyLink();
                   }
                 }}
-                className="flex items-center gap-2 bg-purple-500/20 hover:bg-purple-500/30 px-4 border border-purple-500/30 rounded-xl transition-all duration-200"
+                className={cn('flex', 'items-center', 'gap-2', 'bg-purple-500/20', 'hover:bg-purple-500/30', 'px-4', 'border', 'border-purple-500/30', 'rounded-xl', 'transition-all', 'duration-200')}
               >
                 <Share2 size={18} />
                 Share
@@ -726,14 +727,14 @@ export default function Dashboard() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowAdModal(true)}
-              className="flex justify-center items-center gap-2 hover:bg-yellow-500/30 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 mt-4 py-2.5 border border-yellow-500/30 rounded-lg w-full font-medium text-sm transition-all duration-200"
+              className={cn('flex', 'justify-center', 'items-center', 'gap-2', 'hover:bg-yellow-500/30', 'bg-gradient-to-r', 'from-yellow-500/20', 'to-orange-500/20', 'mt-4', 'py-2.5', 'border', 'border-yellow-500/30', 'rounded-lg', 'w-full', 'font-medium', 'text-sm', 'transition-all', 'duration-200')}
             >
               <Video size={16} className="text-yellow-400" />
               <span>Watch Ad to Earn +5 Coins</span>
               <motion.span
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
-                className="text-yellow-400 text-xs"
+                className={cn('text-yellow-400', 'text-xs')}
               >
                 ({dailyAdWatched}/{MAX_ADS_PER_DAY} today)
               </motion.span>
@@ -741,7 +742,7 @@ export default function Dashboard() {
           )}
 
           {user?.plan === "free" && dailyAdWatched >= MAX_ADS_PER_DAY && (
-            <div className="flex justify-center items-center gap-2 bg-gray-500/10 mt-4 py-2.5 rounded-lg w-full text-gray-500 text-sm">
+            <div className={cn('flex', 'justify-center', 'items-center', 'gap-2', 'bg-gray-500/10', 'mt-4', 'py-2.5', 'rounded-lg', 'w-full', 'text-gray-500', 'text-sm')}>
               <Clock size={14} />
               Daily ad limit reached ({MAX_ADS_PER_DAY}/{MAX_ADS_PER_DAY}). Come back tomorrow!
             </div>
@@ -752,17 +753,17 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/5 backdrop-blur-xl p-6 border border-white/10 rounded-2xl"
+          className={cn('bg-white/5', 'backdrop-blur-xl', 'p-6', 'border', 'border-white/10', 'rounded-2xl')}
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="flex items-center gap-2 font-bold text-2xl">
+          <div className={cn('flex', 'justify-between', 'items-center', 'mb-6')}>
+            <h2 className={cn('flex', 'items-center', 'gap-2', 'font-bold', 'text-2xl')}>
               <MessageCircle size={24} />
               Messages 💬
               {messages.length > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="bg-purple-500/20 px-2 py-1 rounded-lg text-sm"
+                  className={cn('bg-purple-500/20', 'px-2', 'py-1', 'rounded-lg', 'text-sm')}
                 >
                   {messages.length} total
                 </motion.span>
@@ -775,21 +776,21 @@ export default function Dashboard() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="py-16 text-center"
+              className={cn('py-16', 'text-center')}
             >
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity }}
               >
-                <Inbox size={64} className="mx-auto mb-4 text-gray-600" />
+                <Inbox size={64} className={cn('mx-auto', 'mb-4', 'text-gray-600')} />
               </motion.div>
-              <p className="text-gray-400 text-lg">No messages yet 😢</p>
-              <p className="mt-2 text-gray-500 text-sm">Share your profile link to receive anonymous messages!</p>
+              <p className={cn('text-gray-400', 'text-lg')}>No messages yet 😢</p>
+              <p className={cn('mt-2', 'text-gray-500', 'text-sm')}>Share your profile link to receive anonymous messages!</p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={copyLink}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 mt-4 px-6 py-2 rounded-xl"
+                className={cn('inline-flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'mt-4', 'px-6', 'py-2', 'rounded-xl')}
               >
                 <Send size={18} />
                 Share Your Link
@@ -797,7 +798,7 @@ export default function Dashboard() {
             </motion.div>
           ) : (
             <>
-              <div className="gap-4 grid">
+              <div className={cn('gap-4', 'grid')}>
                 <AnimatePresence>
                   {paginatedMessages.map((msg, idx) => {
                     const senderData = msg.sender || msg.senderId;
@@ -822,19 +823,19 @@ export default function Dashboard() {
                             : "border-white/10"
                         }`}
                       >
-                        <div className="flex justify-between items-start gap-4">
+                        <div className={cn('flex', 'justify-between', 'items-start', 'gap-4')}>
                           <div className="flex-1">
-                            <div className="flex flex-wrap items-center gap-2 mb-2">
-                              <span className="bg-white/5 px-2 py-1 rounded-lg text-gray-500 text-xs">
+                            <div className={cn('flex', 'flex-wrap', 'items-center', 'gap-2', 'mb-2')}>
+                              <span className={cn('bg-white/5', 'px-2', 'py-1', 'rounded-lg', 'text-gray-500', 'text-xs')}>
                                 #{(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                               </span>
-                              <span className="flex items-center gap-1 text-gray-500 text-xs">
+                              <span className={cn('flex', 'items-center', 'gap-1', 'text-gray-500', 'text-xs')}>
                                 <Calendar size={12} />
                                 {formatDate(msg.createdAt)}
                               </span>
                             </div>
 
-                            <p className="mt-2 text-gray-200 line-clamp-2 leading-relaxed">
+                            <p className={cn('mt-2', 'text-gray-200', 'line-clamp-2', 'leading-relaxed')}>
                               "{msg.content || "No content"}"
                             </p>
 
@@ -842,43 +843,43 @@ export default function Dashboard() {
                               {isSenderRevealed ? (
                                 <motion.div
                                   whileHover={{ scale: 1.02 }}
-                                  className="inline-flex items-center gap-3 bg-green-500/10 px-3 py-2 rounded-lg"
+                                  className={cn('inline-flex', 'items-center', 'gap-3', 'bg-green-500/10', 'px-3', 'py-2', 'rounded-lg')}
                                 >
                                   {!hasImageError && senderData.profilePic ? (
                                     <img
                                       key={`img-${msg._id}`}
                                       src={getImageUrl(senderData.profilePic)}
                                       alt={senderData.firstName}
-                                      className="border border-green-500 rounded-full w-6 h-6 object-cover"
+                                      className={cn('border', 'border-green-500', 'rounded-full', 'w-6', 'h-6', 'object-cover')}
                                       onError={() => handleImageError(msg._id, senderData._id)}
                                     />
                                   ) : (
-                                    <div className="flex justify-center items-center bg-gradient-to-br from-green-500 to-emerald-500 rounded-full w-6 h-6">
+                                    <div className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-green-500', 'to-emerald-500', 'rounded-full', 'w-6', 'h-6')}>
                                       <User size={12} />
                                     </div>
                                   )}
                                   <div>
-                                    <span className="font-medium text-green-400 text-sm">
+                                    <span className={cn('font-medium', 'text-green-400', 'text-sm')}>
                                       {senderData.firstName || "Unknown"} {senderData.lastName || ""}
                                     </span>
                                     {senderData.username && (
-                                      <span className="ml-1 text-gray-400 text-xs">
+                                      <span className={cn('ml-1', 'text-gray-400', 'text-xs')}>
                                         (@{senderData.username})
                                       </span>
                                     )}
                                   </div>
                                   {msg.revealedAt && (
-                                    <span className="text-gray-500 text-xs">
+                                    <span className={cn('text-gray-500', 'text-xs')}>
                                       • Revealed {new Date(msg.revealedAt).toLocaleDateString()}
                                     </span>
                                   )}
                                 </motion.div>
                               ) : (
-                                <div className="inline-flex items-center gap-2 bg-yellow-500/10 px-3 py-1.5 rounded-lg text-yellow-400">
+                                <div className={cn('inline-flex', 'items-center', 'gap-2', 'bg-yellow-500/10', 'px-3', 'py-1.5', 'rounded-lg', 'text-yellow-400')}>
                                   <Lock size={14} />
                                   <span className="text-sm">Anonymous Sender</span>
                                   {user?.plan === "pro" && !msg.isRevealed && (
-                                    <span className="ml-1 text-cyan-400 text-xs">
+                                    <span className={cn('ml-1', 'text-cyan-400', 'text-xs')}>
                                       ({REVEAL_COST} coins to reveal)
                                     </span>
                                   )}
@@ -887,12 +888,12 @@ export default function Dashboard() {
                             </div>
                           </div>
 
-                          <div className="flex gap-1">
+                          <div className={cn('flex', 'gap-1')}>
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               onClick={(e) => { e.stopPropagation(); handleCopy(msg.content, msg._id); }}
-                              className="hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
+                              className={cn('hover:bg-white/10', 'p-2', 'rounded-lg', 'transition-all', 'duration-200')}
                               title="Copy message"
                             >
                               {copiedId === msg._id ? <Check size={18} className="text-green-400" /> : <Copy size={18} />}
@@ -907,7 +908,7 @@ export default function Dashboard() {
                               title="Like"
                             >
                               {likingId === msg._id ? (
-                                <div className="border-2 border-pink-400 border-t-transparent rounded-full w-5 h-5 animate-spin" />
+                                <div className={cn('border-2', 'border-pink-400', 'border-t-transparent', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                               ) : (
                                 <Heart size={18} fill={msg.liked ? "currentColor" : "none"} />
                               )}
@@ -917,7 +918,7 @@ export default function Dashboard() {
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               onClick={(e) => { e.stopPropagation(); handleDelete(msg._id); }}
-                              className="hover:bg-red-500/20 p-2 rounded-lg text-red-400 transition-all duration-200"
+                              className={cn('hover:bg-red-500/20', 'p-2', 'rounded-lg', 'text-red-400', 'transition-all', 'duration-200')}
                               title="Delete"
                             >
                               <Trash2 size={18} />
@@ -937,7 +938,7 @@ export default function Dashboard() {
                                 title={getRevealMessage()}
                               >
                                 {revealingId === msg._id ? (
-                                  <div className="border-2 border-purple-400 border-t-transparent rounded-full w-5 h-5 animate-spin" />
+                                  <div className={cn('border-2', 'border-purple-400', 'border-t-transparent', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                                 ) : (
                                   <Eye size={18} />
                                 )}
@@ -949,7 +950,7 @@ export default function Dashboard() {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={(e) => { e.stopPropagation(); navigate("/premium"); }}
-                                className="hover:bg-yellow-500/20 p-2 rounded-lg text-yellow-400 transition-all duration-200"
+                                className={cn('hover:bg-yellow-500/20', 'p-2', 'rounded-lg', 'text-yellow-400', 'transition-all', 'duration-200')}
                                 title="Upgrade to reveal"
                               >
                                 <Crown size={18} />
@@ -963,12 +964,12 @@ export default function Dashboard() {
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="absolute inset-0 flex justify-center items-center bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-xl"
+                            className={cn('absolute', 'inset-0', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-r', 'from-purple-500/10', 'to-pink-500/10', 'backdrop-blur-sm', 'rounded-xl')}
                           >
                             <div className="text-center">
-                              <Crown size={32} className="mx-auto mb-2 text-yellow-400" />
-                              <p className="font-semibold text-sm">Upgrade to Premium</p>
-                              <p className="text-gray-300 text-xs">Reveal who sent this message</p>
+                              <Crown size={32} className={cn('mx-auto', 'mb-2', 'text-yellow-400')} />
+                              <p className={cn('font-semibold', 'text-sm')}>Upgrade to Premium</p>
+                              <p className={cn('text-gray-300', 'text-xs')}>Reveal who sent this message</p>
                             </div>
                           </motion.div>
                         )}
@@ -980,13 +981,13 @@ export default function Dashboard() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-3 mt-6">
+                <div className={cn('flex', 'justify-center', 'items-center', 'gap-3', 'mt-6')}>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="bg-white/10 hover:bg-white/20 disabled:opacity-50 p-2 rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
+                    className={cn('bg-white/10', 'hover:bg-white/20', 'disabled:opacity-50', 'p-2', 'rounded-lg', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}
                   >
                     <ChevronLeft size={20} />
                   </motion.button>
@@ -1000,7 +1001,7 @@ export default function Dashboard() {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="bg-white/10 hover:bg-white/20 disabled:opacity-50 p-2 rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
+                    className={cn('bg-white/10', 'hover:bg-white/20', 'disabled:opacity-50', 'p-2', 'rounded-lg', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}
                   >
                     <ChevronRight size={20} />
                   </motion.button>
@@ -1018,26 +1019,26 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="z-50 fixed inset-0 flex justify-center items-center bg-black/80 backdrop-blur-md p-4"
+            className={cn('z-50', 'fixed', 'inset-0', 'flex', 'justify-center', 'items-center', 'bg-black/80', 'backdrop-blur-md', 'p-4')}
             onClick={() => setShowMessageModal(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative bg-gradient-to-br from-gray-900 to-black shadow-2xl border border-purple-500/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              className={cn('relative', 'bg-gradient-to-br', 'from-gray-900', 'to-black', 'shadow-2xl', 'border', 'border-purple-500/30', 'rounded-2xl', 'w-full', 'max-w-2xl', 'max-h-[90vh]', 'overflow-y-auto')}
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setShowMessageModal(false)}
-                className="top-4 right-4 absolute bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-all duration-200"
+                className={cn('top-4', 'right-4', 'absolute', 'bg-white/10', 'hover:bg-white/20', 'p-2', 'rounded-lg', 'transition-all', 'duration-200')}
               >
                 <X size={20} />
               </button>
 
               <div className="p-6">
-                <div className="flex flex-wrap justify-between items-start gap-3 mb-6">
-                  <div className="flex flex-wrap gap-2">
+                <div className={cn('flex', 'flex-wrap', 'justify-between', 'items-start', 'gap-3', 'mb-6')}>
+                  <div className={cn('flex', 'flex-wrap', 'gap-2')}>
                     <span className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
                       selectedMessage.isRevealed
                         ? "bg-green-500/20 text-green-400 border border-green-500/50"
@@ -1048,57 +1049,57 @@ export default function Dashboard() {
                     </span>
                     
                     {selectedMessage.liked && (
-                      <span className="flex items-center gap-2 bg-pink-500/20 px-3 py-1.5 border border-pink-500/50 rounded-full text-pink-400 text-sm">
+                      <span className={cn('flex', 'items-center', 'gap-2', 'bg-pink-500/20', 'px-3', 'py-1.5', 'border', 'border-pink-500/50', 'rounded-full', 'text-pink-400', 'text-sm')}>
                         <Heart size={14} fill="currentColor" />
                         Liked
                       </span>
                     )}
                     
                     {selectedMessage.isRevealed && selectedMessage.sender?.plan === "premium" && (
-                      <span className="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full text-white text-sm">
+                      <span className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-yellow-500', 'to-orange-500', 'px-3', 'py-1.5', 'rounded-full', 'text-white', 'text-sm')}>
                         <Crown size={14} />
                         Premium Sender
                       </span>
                     )}
                     
                     {selectedMessage.isRevealed && selectedMessage.sender?.plan === "pro" && (
-                      <span className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-1.5 rounded-full text-white text-sm">
+                      <span className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-cyan-500', 'to-blue-500', 'px-3', 'py-1.5', 'rounded-full', 'text-white', 'text-sm')}>
                         <Zap size={14} />
                         Pro Sender
                       </span>
                     )}
                   </div>
                   
-                  <div className="flex items-center gap-2 text-gray-500 text-sm">
+                  <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-500', 'text-sm')}>
                     <Hash size={14} />
                     <span>ID: {selectedMessage._id?.slice(-8)}</span>
                   </div>
                 </div>
 
-                <div className="bg-white/5 mb-6 p-6 border border-white/10 rounded-xl">
-                  <div className="flex items-center gap-2 mb-4 text-purple-400">
+                <div className={cn('bg-white/5', 'mb-6', 'p-6', 'border', 'border-white/10', 'rounded-xl')}>
+                  <div className={cn('flex', 'items-center', 'gap-2', 'mb-4', 'text-purple-400')}>
                     <MessageCircle size={18} />
                     <span className="font-semibold">Message Content</span>
                   </div>
-                  <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                  <p className={cn('text-gray-200', 'leading-relaxed', 'whitespace-pre-wrap')}>
                     {selectedMessage.content || "No content"}
                   </p>
                 </div>
 
                 {selectedMessage.isRevealed && selectedMessage.sender ? (
-                  <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 mb-6 p-6 border border-green-500/30 rounded-xl">
-                    <div className="flex items-center gap-2 mb-4 text-green-400">
+                  <div className={cn('bg-gradient-to-r', 'from-green-500/10', 'to-emerald-500/10', 'mb-6', 'p-6', 'border', 'border-green-500/30', 'rounded-xl')}>
+                    <div className={cn('flex', 'items-center', 'gap-2', 'mb-4', 'text-green-400')}>
                       <User size={18} />
                       <span className="font-semibold">Sender Information</span>
                     </div>
-                    <div className="flex items-start gap-4">
+                    <div className={cn('flex', 'items-start', 'gap-4')}>
                       <div className="flex-shrink-0">
                         {selectedMessage.sender.profilePic ? (
                           <img
                             key={`modal-img-${selectedMessage._id}`}
                             src={getImageUrl(selectedMessage.sender.profilePic)}
                             alt={selectedMessage.sender.firstName}
-                            className="border-2 border-green-500 rounded-full w-16 h-16 object-cover"
+                            className={cn('border-2', 'border-green-500', 'rounded-full', 'w-16', 'h-16', 'object-cover')}
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -1107,31 +1108,31 @@ export default function Dashboard() {
                             }}
                           />
                         ) : null}
-                        <div className="flex justify-center items-center bg-gradient-to-br from-green-500 to-emerald-500 rounded-full w-16 h-16 modal-fallback" style={{ display: selectedMessage.sender.profilePic ? 'none' : 'flex' }}>
+                        <div className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-green-500', 'to-emerald-500', 'rounded-full', 'w-16', 'h-16', 'modal-fallback')} style={{ display: selectedMessage.sender.profilePic ? 'none' : 'flex' }}>
                           <User size={32} />
                         </div>
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="font-bold text-green-400 text-xl">
+                        <h3 className={cn('font-bold', 'text-green-400', 'text-xl')}>
                           {selectedMessage.sender.firstName} {selectedMessage.sender.lastName || ""}
                         </h3>
                         
-                        <div className="space-y-1 mt-2 text-sm">
+                        <div className={cn('space-y-1', 'mt-2', 'text-sm')}>
                           {selectedMessage.sender.username && (
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}>
                               <AtSign size={14} className="text-gray-500" />
                               <span>@{selectedMessage.sender.username}</span>
                             </div>
                           )}
                           {selectedMessage.sender.email && (
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}>
                               <Mail size={14} className="text-gray-500" />
                               <span>{selectedMessage.sender.email}</span>
                             </div>
                           )}
                           {selectedMessage.sender.plan && (
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}>
                               <Crown size={14} className="text-yellow-500" />
                               <span className="capitalize">{selectedMessage.sender.plan} Member</span>
                             </div>
@@ -1141,14 +1142,14 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-yellow-500/10 mb-6 p-6 border border-yellow-500/30 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="flex justify-center items-center bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full w-12 h-12">
+                  <div className={cn('bg-yellow-500/10', 'mb-6', 'p-6', 'border', 'border-yellow-500/30', 'rounded-xl')}>
+                    <div className={cn('flex', 'items-center', 'gap-3')}>
+                      <div className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-yellow-500', 'to-orange-500', 'rounded-full', 'w-12', 'h-12')}>
                         <Lock size={20} />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-yellow-400">Anonymous Sender</p>
-                        <p className="mt-1 text-gray-400 text-sm">
+                        <p className={cn('font-semibold', 'text-yellow-400')}>Anonymous Sender</p>
+                        <p className={cn('mt-1', 'text-gray-400', 'text-sm')}>
                           {user?.plan === "premium" 
                             ? "Click the Reveal button to see who sent this message" 
                             : user?.plan === "pro"
@@ -1160,12 +1161,12 @@ export default function Dashboard() {
                   </div>
                 )}
 
-                <div className="bg-white/5 mb-6 p-6 border border-white/10 rounded-xl">
-                  <div className="flex items-center gap-2 mb-4 text-gray-400">
+                <div className={cn('bg-white/5', 'mb-6', 'p-6', 'border', 'border-white/10', 'rounded-xl')}>
+                  <div className={cn('flex', 'items-center', 'gap-2', 'mb-4', 'text-gray-400')}>
                     <Clock size={18} />
                     <span className="font-semibold">Message Details</span>
                   </div>
-                  <div className="gap-4 grid grid-cols-2 text-sm">
+                  <div className={cn('gap-4', 'grid', 'grid-cols-2', 'text-sm')}>
                     <div>
                       <p className="text-gray-500">Sent</p>
                       <p className="text-gray-300">{formatFullDate(selectedMessage.createdAt)}</p>
@@ -1189,12 +1190,12 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className={cn('flex', 'flex-wrap', 'gap-3')}>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleCopy(selectedMessage.content, selectedMessage._id)}
-                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-all duration-200"
+                    className={cn('flex', 'items-center', 'gap-2', 'bg-white/10', 'hover:bg-white/20', 'px-4', 'py-2', 'rounded-lg', 'transition-all', 'duration-200')}
                   >
                     {copiedId === selectedMessage._id ? <Check size={18} className="text-green-400" /> : <Copy size={18} />}
                     {copiedId === selectedMessage._id ? "Copied" : "Copy Message"}
@@ -1212,7 +1213,7 @@ export default function Dashboard() {
                     } disabled:opacity-50`}
                   >
                     {likingId === selectedMessage._id ? (
-                      <div className="border-2 border-pink-400 border-t-transparent rounded-full w-5 h-5 animate-spin" />
+                      <div className={cn('border-2', 'border-pink-400', 'border-t-transparent', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                     ) : (
                       <Heart size={18} fill={selectedMessage.liked ? "currentColor" : "none"} />
                     )}
@@ -1223,7 +1224,7 @@ export default function Dashboard() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleDelete(selectedMessage._id)}
-                    className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded-lg text-red-400 transition-all duration-200"
+                    className={cn('flex', 'items-center', 'gap-2', 'bg-red-500/10', 'hover:bg-red-500/20', 'px-4', 'py-2', 'rounded-lg', 'text-red-400', 'transition-all', 'duration-200')}
                   >
                     <Trash2 size={18} />
                     Delete
@@ -1242,13 +1243,13 @@ export default function Dashboard() {
                       } disabled:opacity-50`}
                     >
                       {revealingId === selectedMessage._id ? (
-                        <div className="border-2 border-purple-400 border-t-transparent rounded-full w-5 h-5 animate-spin" />
+                        <div className={cn('border-2', 'border-purple-400', 'border-t-transparent', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                       ) : (
                         <Eye size={18} />
                       )}
                       Reveal Sender
                       {user?.plan === "pro" && !selectedMessage.isRevealed && (
-                        <span className="ml-1 text-xs">({REVEAL_COST})</span>
+                        <span className={cn('ml-1', 'text-xs')}>({REVEAL_COST})</span>
                       )}
                     </motion.button>
                   )}

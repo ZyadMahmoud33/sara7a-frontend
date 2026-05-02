@@ -1,10 +1,10 @@
-// frontend/src/pages/auth/Login.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { loginAPI } from "../../api/auth";
 import { jwtDecode } from "jwt-decode";
+import { cn } from "@/lib/utils";
 import {
   Mail,
   Lock,
@@ -20,6 +20,8 @@ import {
   Key,
   MessageCircle
 } from "lucide-react";
+
+// باقي الكود
 
 export default function Login() {
   const navigate = useNavigate();
@@ -192,19 +194,19 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="relative flex justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 px-4 min-h-screen overflow-hidden">
+    <div className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'px-4', 'min-h-screen', 'overflow-hidden')}>
       
       {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="-top-40 -right-40 absolute bg-purple-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse mix-blend-multiply filter"></div>
-        <div className="-bottom-40 -left-40 absolute bg-blue-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse delay-1000 mix-blend-multiply filter"></div>
-        <div className="top-1/2 left-1/2 absolute bg-pink-600 opacity-10 blur-3xl rounded-full w-96 h-96 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-2000 transform mix-blend-multiply filter"></div>
+      <div className={cn('fixed', 'inset-0', 'overflow-hidden', 'pointer-events-none')}>
+        <div className={cn('-top-40', '-right-40', 'absolute', 'bg-purple-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('-bottom-40', '-left-40', 'absolute', 'bg-blue-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'delay-1000', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-pink-600', 'opacity-10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000', 'transform', 'mix-blend-multiply', 'filter')}></div>
         
         {/* Floating particles */}
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-white/20 rounded-full w-1 h-1"
+            className={cn('absolute', 'bg-white/20', 'rounded-full', 'w-1', 'h-1')}
             initial={{
               x: Math.random() * window.innerWidth,
               y: Math.random() * window.innerHeight,
@@ -233,9 +235,9 @@ export default function Login() {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="top-5 left-1/2 z-20 fixed bg-purple-500/20 backdrop-blur-sm px-4 py-2 border border-purple-500/50 rounded-full text-purple-300 text-sm -translate-x-1/2 transform"
+            className={cn('top-5', 'left-1/2', 'z-20', 'fixed', 'bg-purple-500/20', 'backdrop-blur-sm', 'px-4', 'py-2', 'border', 'border-purple-500/50', 'rounded-full', 'text-purple-300', 'text-sm', '-translate-x-1/2', 'transform')}
           >
-            <div className="flex items-center gap-2">
+            <div className={cn('flex', 'items-center', 'gap-2')}>
               <MessageCircle size={16} />
               <span>Login to continue to the previous page</span>
             </div>
@@ -247,25 +249,25 @@ export default function Login() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="z-10 relative bg-white/5 shadow-2xl backdrop-blur-xl border border-white/10 rounded-3xl w-full max-w-6xl overflow-hidden"
+        className={cn('z-10', 'relative', 'bg-white/5', 'shadow-2xl', 'backdrop-blur-xl', 'border', 'border-white/10', 'rounded-3xl', 'w-full', 'max-w-6xl', 'overflow-hidden')}
       >
-        <div className="flex md:flex-row flex-col">
+        <div className={cn('flex', 'md:flex-row', 'flex-col')}>
           {/* LEFT SECTION - Welcome Area */}
-          <div className="hidden relative md:flex bg-gradient-to-br from-purple-900/50 to-pink-900/50 w-1/2 overflow-hidden">
-            <div className="absolute inset-0">
+          <div className={cn('hidden', 'relative', 'md:flex', 'bg-gradient-to-br', 'from-purple-900/50', 'to-pink-900/50', 'w-1/2', 'overflow-hidden')}>
+            <div className={cn('absolute', 'inset-0')}>
               <img
                 src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80"
                 alt="Background"
-                className="opacity-40 w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                className={cn('opacity-40', 'w-full', 'h-full', 'object-cover', 'hover:scale-110', 'transition-transform', 'duration-700')}
               />
             </div>
             
-            <div className="z-10 relative flex flex-col justify-center items-center p-12 text-white text-center">
+            <div className={cn('z-10', 'relative', 'flex', 'flex-col', 'justify-center', 'items-center', 'p-12', 'text-white', 'text-center')}>
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className="bg-gradient-to-br from-purple-500 to-pink-500 mb-6 p-3 rounded-2xl"
+                className={cn('bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-6', 'p-3', 'rounded-2xl')}
               >
                 <MessageCircle size={48} />
               </motion.div>
@@ -274,7 +276,7 @@ export default function Login() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mb-4 font-bold text-white text-4xl leading-tight"
+                className={cn('mb-4', 'font-bold', 'text-white', 'text-4xl', 'leading-tight')}
               >
                 {displayText}
                 <span className={`inline-block w-0.5 h-8 ml-1 bg-white ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-100`}></span>
@@ -284,7 +286,7 @@ export default function Login() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="mb-6 text-gray-200 text-sm"
+                className={cn('mb-6', 'text-gray-200', 'text-sm')}
               >
                 Send anonymous messages, discover secrets, and connect freely 💬
               </motion.p>
@@ -293,17 +295,17 @@ export default function Login() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="space-y-3 w-full"
+                className={cn('space-y-3', 'w-full')}
               >
-                <div className="flex items-center gap-2 text-gray-200 text-sm">
+                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}>
                   <CheckCircle size={16} className="text-green-400" />
                   <span>100% Anonymous Messaging</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-200 text-sm">
+                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}>
                   <CheckCircle size={16} className="text-green-400" />
                   <span>Real-time Notifications</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-200 text-sm">
+                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}>
                   <CheckCircle size={16} className="text-green-400" />
                   <span>Premium Features Available</span>
                 </div>
@@ -312,20 +314,20 @@ export default function Login() {
           </div>
 
           {/* RIGHT SECTION - Login Form */}
-          <div className="bg-gradient-to-br from-white/10 to-transparent backdrop-blur-xl p-8 md:p-12 w-full md:w-1/2">
+          <div className={cn('bg-gradient-to-br', 'from-white/10', 'to-transparent', 'backdrop-blur-xl', 'p-8', 'md:p-12', 'w-full', 'md:w-1/2')}>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="mb-8 text-center">
-                <div className="md:hidden inline-block bg-gradient-to-br from-purple-500 to-pink-500 mb-4 p-2 rounded-xl">
+              <div className={cn('mb-8', 'text-center')}>
+                <div className={cn('md:hidden', 'inline-block', 'bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-4', 'p-2', 'rounded-xl')}>
                   <MessageCircle size={32} />
                 </div>
-                <h2 className="bg-clip-text bg-gradient-to-r from-white to-gray-300 font-bold text-transparent text-3xl">
+                <h2 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-gray-300', 'font-bold', 'text-transparent', 'text-3xl')}>
                   Welcome Back
                 </h2>
-                <p className="mt-2 text-gray-400 text-sm">
+                <p className={cn('mt-2', 'text-gray-400', 'text-sm')}>
                   {redirectUrl ? "Login to continue to the previous page" : "Sign in to continue to your account"}
                 </p>
               </div>
@@ -337,21 +339,19 @@ export default function Login() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-2 bg-red-500/20 mb-6 p-3 border border-red-500/50 rounded-xl"
+                    className={cn('flex', 'items-center', 'gap-2', 'bg-red-500/20', 'mb-6', 'p-3', 'border', 'border-red-500/50', 'rounded-xl')}
                   >
-                    <AlertCircle size={18} className="flex-shrink-0 text-red-400" />
-                    <span className="text-red-300 text-sm">{errors.general}</span>
+                    <AlertCircle size={18} className={cn('flex-shrink-0', 'text-red-400')} />
+                    <span className={cn('text-red-300', 'text-sm')}>{errors.general}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
 
               {/* Email Field */}
               <div className="mb-5">
-                <label className="block mb-2 font-medium text-gray-300 text-sm">
-                  Email Address
-                </label>
+                <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>Email Address</label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'email' ? 'scale-[1.02]' : ''}`}>
-                  <Mail size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                  <Mail size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                   <input
                     name="email"
                     type="email"
@@ -374,7 +374,7 @@ export default function Login() {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="mt-1 text-red-400 text-xs"
+                      className={cn('mt-1', 'text-red-400', 'text-xs')}
                     >
                       {errors.email}
                     </motion.p>
@@ -384,11 +384,9 @@ export default function Login() {
 
               {/* Password Field */}
               <div className="mb-5">
-                <label className="block mb-2 font-medium text-gray-300 text-sm">
-                  Password
-                </label>
+                <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>Password</label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'password' ? 'scale-[1.02]' : ''}`}>
-                  <Lock size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                  <Lock size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                   <input
                     name="password"
                     type={showPassword ? "text" : "password"}
@@ -407,7 +405,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="top-1/2 right-3 absolute text-gray-400 hover:text-white transition-colors -translate-y-1/2 transform"
+                    className={cn('top-1/2', 'right-3', 'absolute', 'text-gray-400', 'hover:text-white', 'transition-colors', '-translate-y-1/2', 'transform')}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -418,7 +416,7 @@ export default function Login() {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="mt-1 text-red-400 text-xs"
+                      className={cn('mt-1', 'text-red-400', 'text-xs')}
                     >
                       {errors.password}
                     </motion.p>
@@ -427,22 +425,22 @@ export default function Login() {
               </div>
 
               {/* Remember Me & Forgot Password */}
-              <div className="flex justify-between items-center mb-6">
-                <label className="flex items-center gap-2 cursor-pointer">
+              <div className={cn('flex', 'justify-between', 'items-center', 'mb-6')}>
+                <label className={cn('flex', 'items-center', 'gap-2', 'cursor-pointer')}>
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="bg-white/10 border-white/20 rounded focus:ring-purple-500 focus:ring-offset-0 w-4 h-4 text-purple-500"
+                    className={cn('bg-white/10', 'border-white/20', 'rounded', 'focus:ring-purple-500', 'focus:ring-offset-0', 'w-4', 'h-4', 'text-purple-500')}
                   />
-                  <span className="text-gray-400 text-sm">Remember me</span>
+                  <span className={cn('text-gray-400', 'text-sm')}>Remember me</span>
                 </label>
                 
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/forget-password")}
-                  className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+                  className={cn('text-purple-400', 'hover:text-purple-300', 'text-sm', 'transition-colors')}
                 >
                   Forgot Password?
                 </motion.button>
@@ -454,43 +452,43 @@ export default function Login() {
                 whileTap={{ scale: loading ? 1 : 0.98 }}
                 onClick={login}
                 disabled={loading}
-                className="group relative bg-gradient-to-r from-purple-500 hover:from-purple-600 to-pink-500 hover:to-pink-600 disabled:opacity-50 shadow-lg py-3 rounded-xl w-full overflow-hidden font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed"
+                className={cn('group', 'relative', 'bg-gradient-to-r', 'from-purple-500', 'hover:from-purple-600', 'to-pink-500', 'hover:to-pink-600', 'disabled:opacity-50', 'shadow-lg', 'py-3', 'rounded-xl', 'w-full', 'overflow-hidden', 'font-semibold', 'text-white', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}
               >
-                <span className="z-10 relative flex justify-center items-center gap-2">
+                <span className={cn('z-10', 'relative', 'flex', 'justify-center', 'items-center', 'gap-2')}>
                   {loading ? (
                     <>
-                      <div className="border-2 border-white/30 border-t-white rounded-full w-5 h-5 animate-spin" />
+                      <div className={cn('border-2', 'border-white/30', 'border-t-white', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                       Logging in...
                     </>
                   ) : (
                     <>
                       <LogIn size={18} />
                       Login
-                      <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                      <ArrowRight size={18} className={cn('transition-transform', 'group-hover:translate-x-1')} />
                     </>
                   )}
                 </span>
               </motion.button>
 
               {/* Divider */}
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="border-white/10 border-t w-full"></div>
+              <div className={cn('relative', 'my-6')}>
+                <div className={cn('absolute', 'inset-0', 'flex', 'items-center')}>
+                  <div className={cn('border-white/10', 'border-t', 'w-full')}></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-transparent px-2 text-gray-500">or</span>
+                <div className={cn('relative', 'flex', 'justify-center', 'text-sm')}>
+                  <span className={cn('bg-transparent', 'px-2', 'text-gray-500')}>or</span>
                 </div>
               </div>
 
               {/* Register Link */}
               <div className="text-center">
-                <p className="text-gray-400 text-sm">
+                <p className={cn('text-gray-400', 'text-sm')}>
                   Don't have an account?{" "}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => navigate("/register")}
-                    className="inline-flex items-center gap-1 font-semibold text-purple-400 hover:text-purple-300 transition-colors"
+                    className={cn('inline-flex', 'items-center', 'gap-1', 'font-semibold', 'text-purple-400', 'hover:text-purple-300', 'transition-colors')}
                   >
                     Create Account
                     <UserPlus size={14} />
@@ -499,8 +497,8 @@ export default function Login() {
               </div>
 
               {/* Security Note */}
-              <div className="bg-purple-500/10 mt-6 p-3 border border-purple-500/30 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-400 text-xs">
+              <div className={cn('bg-purple-500/10', 'mt-6', 'p-3', 'border', 'border-purple-500/30', 'rounded-lg')}>
+                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-400', 'text-xs')}>
                   <Shield size={14} className="text-purple-400" />
                   <span>Your data is encrypted and secure. We never share your information.</span>
                 </div>
@@ -521,7 +519,7 @@ export default function Login() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="hidden lg:block bottom-10 left-10 fixed opacity-20 pointer-events-none"
+        className={cn('hidden', 'lg:block', 'bottom-10', 'left-10', 'fixed', 'opacity-20', 'pointer-events-none')}
       >
         <Sparkles size={64} className="text-purple-500" />
       </motion.div>
@@ -537,7 +535,7 @@ export default function Login() {
           ease: "easeInOut",
           delay: 1,
         }}
-        className="hidden lg:block top-10 right-10 fixed opacity-20 pointer-events-none"
+        className={cn('hidden', 'lg:block', 'top-10', 'right-10', 'fixed', 'opacity-20', 'pointer-events-none')}
       >
         <Key size={64} className="text-pink-500" />
       </motion.div>
