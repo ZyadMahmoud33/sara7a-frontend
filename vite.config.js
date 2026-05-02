@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
   return {
@@ -50,21 +50,11 @@ export default defineConfig(({ command, mode }) => {
       cssMinify: true,
       assetsInlineLimit: 4096,
       emptyOutDir: true,
-      // ✅ شيل الـ manualChunks عشان التضارب
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'vendor': ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'lucide-react', 'axios', 'recharts', 'socket.io-client'],
-          },
-        },
-      },
+      // ✅ تم إزالة rollupOptions بالكامل
     },
 
     css: {
       devSourcemap: true,
-      modules: {
-        localsConvention: 'camelCase',
-      },
     },
 
     preview: {
@@ -78,7 +68,6 @@ export default defineConfig(({ command, mode }) => {
 
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-router-dom', 'axios', 'framer-motion', 'lucide-react'],
-      exclude: [],
     },
 
     esbuild: {
