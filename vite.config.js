@@ -50,13 +50,11 @@ export default defineConfig(({ command, mode }) => {
       cssMinify: true,
       assetsInlineLimit: 4096,
       emptyOutDir: true,
+      // ✅ شيل الـ manualChunks عشان التضارب
       rollupOptions: {
         output: {
           manualChunks: {
-            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            'framer-motion-vendor': ['framer-motion'],
-            'lucide-react-vendor': ['lucide-react'],
-            'axios-vendor': ['axios'],
+            'vendor': ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'lucide-react', 'axios', 'recharts', 'socket.io-client'],
           },
         },
       },
