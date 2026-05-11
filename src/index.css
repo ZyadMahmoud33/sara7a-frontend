@@ -1,12 +1,7 @@
-/* 1. الـ imports في أول سطر فقط */
 @import "@fontsource-variable/geist";
-
-/* 2. الـ Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* 3. بقية الستايل بتاعك (امسح الـ import التانية اللي كانت هنا) */
 
 /* Custom styles */
 ::-webkit-scrollbar {
