@@ -209,6 +209,8 @@ export const uploadCoverPicsAPI = async (files) => {
 // ================================
 export const updateProfileAPI = async (profileData) => {
   try {
+    console.log("📤 updateProfileAPI - received data:", profileData); // ✅ أضف ده
+    
     const cleanedData = {};
     
     for (const [key, value] of Object.entries(profileData)) {
@@ -217,11 +219,15 @@ export const updateProfileAPI = async (profileData) => {
       }
     }
     
+    console.log("📤 updateProfileAPI - cleaned data:", cleanedData); // ✅ أضف ده
+    
     if (Object.keys(cleanedData).length === 0) {
       throw new Error("No data to update");
     }
     
     const response = await API.patch(USER_ENDPOINTS.UPDATE_PROFILE, cleanedData);
+    console.log("📥 updateProfileAPI - response:", response.data); // ✅ أضف ده
+    
     return handleResponse(response);
   } catch (error) {
     console.error("Update profile error:", error);
@@ -307,18 +313,37 @@ export const createManualPaymentAPI = async ({ plan, method, screenshot }) => {
 // ================================
 // 🎬 WATCH AD TO EARN COINS
 // ================================
+
 export const watchAdAPI = async () => {
   try {
-    const response = await API.post(USER_ENDPOINTS.WATCH_AD);
+    const response = await API.post(USER_ENDPOINTS.WATCH_AD, {});
+    
+    console.log("🎬 Watch ad response:", response.data);
+    
+    // ✅ بما إن successResponse بترجع { success: true, message, data }
+    const data = response?.data?.data || {};
+    
     return {
       success: true,
-      coins: response?.data?.data?.coins || response?.data?.coins || 0,
-      dailyAdWatched: response?.data?.data?.dailyAdWatched || 0,
+      coins: data?.coins || 0,
+      dailyAdWatched: data?.dailyAdWatched || 0,
+      remainingAds: data?.remainingAds || (5 - (data?.dailyAdWatched || 0)),
+      canWatch: data?.canWatch !== false,
+      nextReset: data?.nextReset || null,  // ✅ أضفنا nextReset
       message: response?.data?.message || "You earned 5 coins! 🎉",
     };
   } catch (error) {
     console.error("Watch ad error:", error);
-    throw new Error(error?.response?.data?.message || "Failed to earn coins ❌");
+    const errorData = error?.response?.data?.data || {};
+    const message = error?.response?.data?.message || "Failed to earn coins ❌";
+    
+    throw {
+      message,
+      remainingAds: errorData?.remainingAds || 0,
+      dailyAdWatched: errorData?.dailyAdWatched || 0,
+      canWatch: false,
+      nextReset: errorData?.nextReset,
+    };
   }
 };
 

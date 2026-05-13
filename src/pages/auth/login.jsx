@@ -134,7 +134,7 @@ export default function Login() {
         password: form.password.trim(),
       });
 
-      const accessToken = res?.data?.accessToken || res?.accessToken;
+      const accessToken = res?.data?.accessToken || res?.accessToken || res?.data?.data?.accessToken;
       const refreshToken = res?.data?.refreshToken || res?.refreshToken;
       const user = res?.data?.user || res?.user;
 

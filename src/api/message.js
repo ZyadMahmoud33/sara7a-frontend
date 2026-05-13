@@ -38,14 +38,13 @@ const validateMessageContent = (content) => {
 };
 
 // ================================
-// 📩 SEND MESSAGE (معدل)
+// 📩 SEND MESSAGE
 // ================================
 export const sendMessageAPI = async (receiverId, content) => {
   try {
     validateId(receiverId, "Receiver ID");
     const validatedContent = validateMessageContent(content);
     
-    // ✅ التحقق من التوكن
     const token = localStorage.getItem("accessToken");
     const role = localStorage.getItem("role");
     console.log("🔑 Token exists:", !!token);
@@ -80,9 +79,6 @@ export const sendMessageAPI = async (receiverId, content) => {
 // ================================
 // 📥 GET MY MESSAGES
 // ================================
-// ================================
-// 📥 GET MY MESSAGES (معدل)
-// ================================
 export const getMyMessagesAPI = async () => {
   try {
     const response = await API.get(MESSAGE_ENDPOINTS.GET_MY);
@@ -92,7 +88,6 @@ export const getMyMessagesAPI = async () => {
     const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     
     return messages.map(msg => {
-      // ✅ تصحيح مسار صورة المرسل (sender)
       let senderProfilePic = null;
       const sender = msg.sender || msg.senderId;
       
@@ -109,11 +104,17 @@ export const getMyMessagesAPI = async () => {
       return {
         ...msg,
         isRevealed: msg.isRevealed || false,
-        liked: msg.liked || false,
+        liked: msg.liked ?? false,
+        likes: msg.likes || 0,
         senderId: msg.isRevealed ? msg.senderId : null,
         sender: msg.isRevealed && sender ? {
-          ...sender,
-          profilePic: senderProfilePic
+          _id: sender._id,
+          firstName: sender.firstName,
+          lastName: sender.lastName,
+          username: sender.username,
+          profilePic: senderProfilePic,
+          email: sender.email,
+          plan: sender.plan,
         } : null
       };
     });
@@ -131,6 +132,8 @@ export const revealSenderAPI = async (messageId) => {
     validateId(messageId, "Message ID");
     
     const response = await API.patch(MESSAGE_ENDPOINTS.REVEAL(messageId));
+    
+    console.log("🔓 Reveal sender response:", response.data);
     
     return {
       success: true,
@@ -157,6 +160,7 @@ export const likeMessageAPI = async (messageId) => {
     return {
       success: true,
       likes: response?.data?.data?.likes || 0,
+      liked: response?.data?.data?.liked || false,
       message: response?.data?.message,
     };
   } catch (error) {
@@ -261,6 +265,69 @@ export const getUserMessagesAPI = async (receiverId, params = {}) => {
   } catch (error) {
     console.error("getUserMessagesAPI error:", error);
     throw error?.response?.data || error;
+  }
+};
+
+// ================================
+// 🪙 COINS & MESSAGE MANAGEMENT
+// ================================
+export const getUserCoinsBalanceAPI = async () => {
+  try {
+    const response = await API.get("/user/getuser");
+    const userData = response?.data?.data || response?.data;
+    return {
+      coins: userData?.coins || 0,
+      plan: userData?.plan || "free",
+    };
+  } catch (error) {
+    console.error("getUserCoinsBalanceAPI error:", error);
+    return { coins: 0, plan: "free" };
+  }
+};
+
+export const canAffordRevealAPI = async () => {
+  try {
+    const { coins, plan } = await getUserCoinsBalanceAPI();
+    const REVEAL_COST = 5;
+    
+    if (plan === "premium") return { canReveal: true, reason: null };
+    if (plan === "pro" && coins >= REVEAL_COST) return { canReveal: true, reason: null };
+    if (plan === "pro" && coins < REVEAL_COST) {
+      return { canReveal: false, reason: `Need ${REVEAL_COST - coins} more coins` };
+    }
+    return { canReveal: false, reason: "Upgrade to Pro or Premium" };
+  } catch (error) {
+    console.error("canAffordRevealAPI error:", error);
+    return { canReveal: false, reason: "Error checking balance" };
+  }
+};
+
+export const syncUserCoinsAPI = async () => {
+  try {
+    const { coins, plan } = await getUserCoinsBalanceAPI();
+    return { coins, plan };
+  } catch (error) {
+    console.error("syncUserCoinsAPI error:", error);
+    return { coins: 0, plan: "free" };
+  }
+};
+
+export const getRemainingRevealsCountAPI = async () => {
+  try {
+    const { plan } = await getUserCoinsBalanceAPI();
+    const messages = await getMyMessagesAPI();
+    const revealedCount = messages.filter(m => m.isRevealed).length;
+    const MAX_PRO_REVEALS = 50;
+    
+    if (plan === "premium") return "Unlimited";
+    if (plan === "pro") {
+      const remaining = MAX_PRO_REVEALS - revealedCount;
+      return remaining > 0 ? remaining : 0;
+    }
+    return 0;
+  } catch (error) {
+    console.error("getRemainingRevealsCountAPI error:", error);
+    return 0;
   }
 };
 

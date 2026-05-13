@@ -4,10 +4,9 @@ import axios from "axios";
 // ================================
 // 🌐 CONFIG
 // ================================
-// ✅ في التطوير: استخدم الـ proxy بتاع Vite
-// ✅ في الإنتاج: استخدم الرابط الحقيقي من متغير البيئة
-const BASE_URL = import.meta.env.VITE_API_URL || "";
-const API_BASE_URL = BASE_URL ? `${BASE_URL}/api` : "/api";
+// ✅ استخدام متغير البيئة أولاً، ثم localhost كـ fallback
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_BASE_URL = `${BASE_URL}/api`;
 
 // ✅ منع console.log في الإنتاج
 const isDev = import.meta.env.DEV;
@@ -22,7 +21,7 @@ const ENDPOINTS = {
 };
 
 // ================================
-// 🔐 TOKEN HELPERS (نفس ما هي)
+// 🔐 TOKEN HELPERS
 // ================================
 const getAccessToken = () => localStorage.getItem("accessToken");
 const getRefreshToken = () => localStorage.getItem("refreshToken");
@@ -72,7 +71,7 @@ const API = axios.create({
 });
 
 // ================================
-// 📤 REQUEST INTERCEPTOR (نفس ما هي)
+// 📤 REQUEST INTERCEPTOR
 // ================================
 API.interceptors.request.use(
   (config) => {
@@ -95,7 +94,7 @@ API.interceptors.request.use(
 );
 
 // ================================
-// 🔁 REFRESH CONTROL (نفس ما هي)
+// 🔁 REFRESH CONTROL
 // ================================
 let isRefreshing = false;
 let failedQueue = [];
@@ -111,6 +110,9 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
+// ================================
+// 🔁 REFRESH FUNCTION
+// ================================
 const refreshAccessToken = async () => {
   const refreshToken = getRefreshToken();
   const role = getUserRole();
@@ -147,6 +149,9 @@ const refreshAccessToken = async () => {
   return newAccessToken;
 };
 
+// ================================
+// 📥 RESPONSE INTERCEPTOR
+// ================================
 API.interceptors.response.use(
   (response) => response,
   async (error) => {

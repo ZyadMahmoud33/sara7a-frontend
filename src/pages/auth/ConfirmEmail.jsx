@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { confirmEmailAPI, resendOtpAPI } from "../../api/auth";
+import { cn } from "@/lib/utils";
 import {
   Mail,
   Key,
@@ -82,7 +83,8 @@ export default function ConfirmEmail() {
 
       const res = await confirmEmailAPI({ email, otp });
 
-      toast.success(res?.data?.message || "Email confirmed successfully! 🎉");
+      // ✅ التعديل هنا - res نفسها فيها message
+      toast.success(res?.message || "Email confirmed successfully! 🎉");
       
       localStorage.removeItem("email");
       localStorage.removeItem("tempRegistration");
@@ -97,7 +99,7 @@ export default function ConfirmEmail() {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
       
-      const message = err?.response?.data?.message || "Invalid OTP ❌";
+      const message = err?.response?.data?.message || err?.message || "Invalid OTP ❌";
       toast.error(message);
       
       if (newAttempts >= 3) {
@@ -118,7 +120,8 @@ export default function ConfirmEmail() {
 
       const res = await resendOtpAPI({ email });
 
-      toast.success(res?.data?.message || "OTP resent successfully! 📩");
+      // ✅ التعديل هنا - res نفسها فيها message
+      toast.success(res?.message || "OTP resent successfully! 📩");
       setTimer(30);
       setAttempts(0);
       setOtp("");
@@ -126,7 +129,8 @@ export default function ConfirmEmail() {
 
     } catch (err) {
       console.error(err);
-      toast.error(err?.response?.data?.message || "Failed to resend OTP ❌");
+      const message = err?.response?.data?.message || err?.message || "Failed to resend OTP ❌";
+      toast.error(message);
     } finally {
       setResendLoading(false);
     }
@@ -143,19 +147,19 @@ export default function ConfirmEmail() {
   };
 
   return (
-    <div className="relative flex justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 px-4 min-h-screen overflow-hidden">
+    <div className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'px-4', 'min-h-screen', 'overflow-hidden')}>
       
       {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="-top-40 -right-40 absolute bg-teal-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse mix-blend-multiply filter"></div>
-        <div className="-bottom-40 -left-40 absolute bg-blue-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse delay-1000 mix-blend-multiply filter"></div>
-        <div className="top-1/2 left-1/2 absolute bg-cyan-600 opacity-10 blur-3xl rounded-full w-96 h-96 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-2000 transform mix-blend-multiply filter"></div>
+      <div className={cn('fixed', 'inset-0', 'overflow-hidden', 'pointer-events-none')}>
+        <div className={cn('-top-40', '-right-40', 'absolute', 'bg-teal-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('-bottom-40', '-left-40', 'absolute', 'bg-blue-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'delay-1000', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-cyan-600', 'opacity-10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000', 'transform', 'mix-blend-multiply', 'filter')}></div>
         
         {/* Floating particles */}
         {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-white/20 rounded-full w-1 h-1"
+            className={cn('absolute', 'bg-white/20', 'rounded-full', 'w-1', 'h-1')}
             initial={{
               x: Math.random() * window.innerWidth,
               y: Math.random() * window.innerHeight,
@@ -181,44 +185,44 @@ export default function ConfirmEmail() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="z-10 relative w-full max-w-md"
+        className={cn('z-10', 'relative', 'w-full', 'max-w-md')}
       >
-        <div className="bg-gradient-to-br from-white/10 to-transparent shadow-2xl backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden">
-          <div className="p-6 md:p-8">
+        <div className={cn('bg-gradient-to-br', 'from-white/10', 'to-transparent', 'shadow-2xl', 'backdrop-blur-xl', 'border', 'border-white/10', 'rounded-3xl', 'overflow-hidden')}>
+          <div className={cn('p-6', 'md:p-8')}>
             {/* Header */}
-            <div className="mb-6 text-center">
+            <div className={cn('mb-6', 'text-center')}>
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className="inline-block bg-gradient-to-br from-teal-500 to-blue-500 mb-4 p-3 rounded-2xl"
+                className={cn('inline-block', 'bg-gradient-to-br', 'from-teal-500', 'to-blue-500', 'mb-4', 'p-3', 'rounded-2xl')}
               >
                 <Mail size={32} />
               </motion.div>
-              <h2 className="bg-clip-text bg-gradient-to-r from-white to-gray-400 font-bold text-transparent text-3xl">
+              <h2 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-gray-400', 'font-bold', 'text-transparent', 'text-3xl')}>
                 Verify Your Email
               </h2>
-              <p className="mt-2 text-gray-400 text-sm">
+              <p className={cn('mt-2', 'text-gray-400', 'text-sm')}>
                 We've sent a verification code to your email
               </p>
             </div>
 
             {/* Email Display */}
-            <div className="bg-teal-500/10 mb-6 p-3 border border-teal-500/30 rounded-xl">
-              <div className="flex justify-center items-center gap-2">
+            <div className={cn('bg-teal-500/10', 'mb-6', 'p-3', 'border', 'border-teal-500/30', 'rounded-xl')}>
+              <div className={cn('flex', 'justify-center', 'items-center', 'gap-2')}>
                 <MessageCircle size={16} className="text-teal-400" />
-                <span className="text-gray-200 text-sm break-all">{email}</span>
+                <span className={cn('text-gray-200', 'text-sm', 'break-all')}>{email}</span>
               </div>
             </div>
 
             {/* OTP Input Section */}
             <div className="space-y-4">
               <div>
-                <label className="block mb-2 font-medium text-gray-300 text-sm">
+                <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                   Verification Code
                 </label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'otp' ? 'scale-[1.02]' : ''}`}>
-                  <Key size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                  <Key size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                   <input
                     type="text"
                     value={otp}
@@ -242,7 +246,7 @@ export default function ConfirmEmail() {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                      className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                     >
                       <AlertCircle size={12} />
                       {otpError}
@@ -256,7 +260,7 @@ export default function ConfirmEmail() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-gray-500 text-xs text-center"
+                  className={cn('text-gray-500', 'text-xs', 'text-center')}
                 >
                   {6 - otp.length} more digit{6 - otp.length !== 1 ? 's' : ''} remaining
                 </motion.div>
@@ -268,12 +272,12 @@ export default function ConfirmEmail() {
                 whileTap={{ scale: loading ? 1 : 0.98 }}
                 onClick={confirm}
                 disabled={loading}
-                className="group relative bg-gradient-to-r from-teal-500 hover:from-teal-600 to-blue-500 hover:to-blue-600 disabled:opacity-50 shadow-lg py-3 rounded-xl w-full overflow-hidden font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed"
+                className={cn('group', 'relative', 'bg-gradient-to-r', 'from-teal-500', 'hover:from-teal-600', 'to-blue-500', 'hover:to-blue-600', 'disabled:opacity-50', 'shadow-lg', 'py-3', 'rounded-xl', 'w-full', 'overflow-hidden', 'font-semibold', 'text-white', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}
               >
-                <span className="z-10 relative flex justify-center items-center gap-2">
+                <span className={cn('z-10', 'relative', 'flex', 'justify-center', 'items-center', 'gap-2')}>
                   {loading ? (
                     <>
-                      <div className="border-2 border-white/30 border-t-white rounded-full w-5 h-5 animate-spin" />
+                      <div className={cn('border-2', 'border-white/30', 'border-t-white', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                       Verifying...
                     </>
                   ) : (
@@ -286,9 +290,9 @@ export default function ConfirmEmail() {
               </motion.button>
 
               {/* Resend Section */}
-              <div className="pt-2 text-center">
+              <div className={cn('pt-2', 'text-center')}>
                 {timer > 0 ? (
-                  <div className="flex justify-center items-center gap-2 text-gray-400 text-sm">
+                  <div className={cn('flex', 'justify-center', 'items-center', 'gap-2', 'text-gray-400', 'text-sm')}>
                     <Clock size={14} className="text-teal-400" />
                     <span>Resend available in {formatTime(timer)}</span>
                   </div>
@@ -296,11 +300,11 @@ export default function ConfirmEmail() {
                   <button
                     onClick={resend}
                     disabled={resendLoading}
-                    className="flex justify-center items-center gap-2 mx-auto text-teal-400 hover:text-teal-300 text-sm transition-colors"
+                    className={cn('flex', 'justify-center', 'items-center', 'gap-2', 'mx-auto', 'text-teal-400', 'hover:text-teal-300', 'text-sm', 'transition-colors')}
                   >
                     {resendLoading ? (
                       <>
-                        <div className="border-2 border-teal-400/30 border-t-teal-400 rounded-full w-4 h-4 animate-spin" />
+                        <div className={cn('border-2', 'border-teal-400/30', 'border-t-teal-400', 'rounded-full', 'w-4', 'h-4', 'animate-spin')} />
                         Sending...
                       </>
                     ) : (
@@ -314,24 +318,24 @@ export default function ConfirmEmail() {
               </div>
 
               {/* Help Text */}
-              <div className="text-gray-500 text-xs text-center">
+              <div className={cn('text-gray-500', 'text-xs', 'text-center')}>
                 <p>Didn't receive the code? Check your spam folder</p>
               </div>
 
               {/* Divider */}
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="border-white/10 border-t w-full"></div>
+              <div className={cn('relative', 'my-4')}>
+                <div className={cn('absolute', 'inset-0', 'flex', 'items-center')}>
+                  <div className={cn('border-white/10', 'border-t', 'w-full')}></div>
                 </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="bg-transparent px-2 text-gray-500">or</span>
+                <div className={cn('relative', 'flex', 'justify-center', 'text-xs')}>
+                  <span className={cn('bg-transparent', 'px-2', 'text-gray-500')}>or</span>
                 </div>
               </div>
 
               {/* Back to Login */}
               <button
                 onClick={() => navigate("/login")}
-                className="flex justify-center items-center gap-2 w-full text-gray-400 hover:text-white text-sm transition-colors"
+                className={cn('flex', 'justify-center', 'items-center', 'gap-2', 'w-full', 'text-gray-400', 'hover:text-white', 'text-sm', 'transition-colors')}
               >
                 <ArrowLeft size={14} />
                 Back to Login
@@ -339,11 +343,11 @@ export default function ConfirmEmail() {
             </div>
 
             {/* Security Note */}
-            <div className="bg-teal-500/10 mt-6 p-3 border border-teal-500/30 rounded-lg">
-              <div className="flex items-start gap-2 text-gray-400 text-xs">
-                <Shield size={14} className="flex-shrink-0 mt-0.5 text-teal-400" />
+            <div className={cn('bg-teal-500/10', 'mt-6', 'p-3', 'border', 'border-teal-500/30', 'rounded-lg')}>
+              <div className={cn('flex', 'items-start', 'gap-2', 'text-gray-400', 'text-xs')}>
+                <Shield size={14} className={cn('flex-shrink-0', 'mt-0.5', 'text-teal-400')} />
                 <div>
-                  <p className="mb-1 font-semibold text-teal-400">Why verify your email?</p>
+                  <p className={cn('mb-1', 'font-semibold', 'text-teal-400')}>Why verify your email?</p>
                   <p>Email verification helps secure your account and ensures you can recover your password if needed.</p>
                 </div>
               </div>
@@ -354,9 +358,9 @@ export default function ConfirmEmail() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-yellow-500/10 mt-4 p-2 border border-yellow-500/30 rounded-lg"
+                className={cn('bg-yellow-500/10', 'mt-4', 'p-2', 'border', 'border-yellow-500/30', 'rounded-lg')}
               >
-                <div className="flex items-center gap-2 text-yellow-400 text-xs">
+                <div className={cn('flex', 'items-center', 'gap-2', 'text-yellow-400', 'text-xs')}>
                   <AlertCircle size={12} />
                   <span>{3 - attempts} attempt{3 - attempts !== 1 ? 's' : ''} remaining before code expires</span>
                 </div>
@@ -377,7 +381,7 @@ export default function ConfirmEmail() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="hidden lg:block bottom-10 left-10 fixed opacity-20 pointer-events-none"
+        className={cn('hidden', 'lg:block', 'bottom-10', 'left-10', 'fixed', 'opacity-20', 'pointer-events-none')}
       >
         <Shield size={48} className="text-teal-500" />
       </motion.div>
@@ -393,7 +397,7 @@ export default function ConfirmEmail() {
           ease: "easeInOut",
           delay: 1,
         }}
-        className="hidden lg:block top-10 right-10 fixed opacity-20 pointer-events-none"
+        className={cn('hidden', 'lg:block', 'top-10', 'right-10', 'fixed', 'opacity-20', 'pointer-events-none')}
       >
         <Sparkles size={48} className="text-blue-500" />
       </motion.div>

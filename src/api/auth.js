@@ -7,7 +7,7 @@ import API from "./axios.js";
 const AUTH_ENDPOINTS = {
   LOGIN: "/auth/login",
   REGISTER: "/auth/signup",
-  CONFIRM_EMAIL: "/auth/confirm-email",
+  CONFIRM_EMAIL: "/auth/confirm-email",  // ✅ تأكد إنها صح
   RESEND_OTP: "/auth/resend-otp",
   FORGET_PASSWORD: "/auth/forget-password",
   RESET_PASSWORD: "/auth/reset-password",
@@ -42,12 +42,24 @@ export const loginAPI = async (credentials) => {
   console.log("✅ Login response status:", response.status);
   console.log("📦 Login response data:", response.data);
 
-  const { accessToken, refreshToken, user } = response.data?.data || {};
+  // ✅ طريقة مرنة لجلب البيانات (تشيل كل الاحتمالات)
+  const responseData = response.data?.data || response.data || {};
+  
+  const accessToken = responseData?.accessToken || response.data?.accessToken;
+  const refreshToken = responseData?.refreshToken || response.data?.refreshToken;
+  const user = responseData?.user || response.data?.user;
+
+  console.log("🔑 Extracted accessToken:", accessToken);
+  console.log("🔄 Extracted refreshToken:", refreshToken);
+  console.log("👤 Extracted user:", user);
 
   if (accessToken) {
     localStorage.setItem("accessToken", accessToken);
     console.log("🔑 Access token saved");
+  } else {
+    console.warn("⚠️ No access token received!");
   }
+  
   if (refreshToken) {
     localStorage.setItem("refreshToken", refreshToken);
     console.log("🔄 Refresh token saved");
@@ -69,7 +81,6 @@ export const loginAPI = async (credentials) => {
         localStorage.setItem("role", payload.role);
         console.log("👤 Role saved:", payload.role);
       }
-      // ✅ حفظ userId من التوكن إذا لم يكن موجود في user
       if (!user?._id && !user?.id && payload.userId) {
         localStorage.setItem("userId", payload.userId);
         console.log("👤 User ID from token saved:", payload.userId);
@@ -126,12 +137,7 @@ export const refreshTokenAPI = async () => {
 // ✅ CONFIRM EMAIL
 export const confirmEmailAPI = async ({ email, otp }) => {
   const response = await API.post(AUTH_ENDPOINTS.CONFIRM_EMAIL, { email, otp });
-  
-  if (response.data?.success) {
-    localStorage.removeItem("tempRegistration");
-  }
-  
-  return response.data;
+  return response.data;  // ✅ ده صح
 };
 
 // 🔁 RESEND OTP (PATCH method)

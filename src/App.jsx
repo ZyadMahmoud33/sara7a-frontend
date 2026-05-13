@@ -23,7 +23,7 @@ import Messages from "./pages/app/Messages";
 import PublicProfile from "./pages/app/PublicProfile";
 import Premium from "./pages/app/Premium";
 import PaymentSuccess from "./pages/app/PaymentSuccess";
-import ProfileSettings from "./pages/app/ProfileSettings";
+import ProfileSettings from "./pages/app/ProfileSettings"; // ✅ أضفنا هذا
 
 // Pages - Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -147,12 +147,7 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
+    <BrowserRouter>
       {/* Toast Notifications */}
       <Toaster
         position="top-center"
@@ -280,6 +275,7 @@ export default function App() {
           }
         />
 
+        {/* ✅ PROFİLE SETTINGS (New Route) */}
         <Route
           path="/profile-settings"
           element={
