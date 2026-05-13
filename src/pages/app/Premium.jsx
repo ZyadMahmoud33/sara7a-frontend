@@ -10,6 +10,7 @@ import {
   getProfileAPI,
 } from "../../api/user";
 import PaymentModal from "../../components/PaymentModal";
+import { cn } from "@/lib/utils";
 import {
   Crown,
   Star,
@@ -61,13 +62,13 @@ const APP_LINKS = {
       ios: "https://apps.apple.com/eg/app/vodafone-cash/id1234567890",
       android: "https://play.google.com/store/apps/details?id=com.vodafone.cash"
     },
-    accountNumber: "01098765432",
+    accountNumber: "01067309450",
     accountName: "Sara7a App",
     deepLinkSupported: true,
     instructions: [
       "افتح تطبيق Vodafone Cash",
       "اختر 'تحويل الأموال'",
-      "أدخل رقم الحساب: 01098765432",
+      "أدخل رقم الحساب: 01067309450",
       "أدخل المبلغ المطلوب",
       "اكتب الرقم المرجعي واحفظ الإيصال"
     ]
@@ -354,21 +355,21 @@ export default function Premium() {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen overflow-hidden text-white">
+    <div className={cn('relative', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'min-h-screen', 'overflow-hidden', 'text-white')}>
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="-top-40 -right-40 absolute bg-purple-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse"></div>
-        <div className="-bottom-40 -left-40 absolute bg-orange-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse delay-1000"></div>
-        <div className="top-1/2 left-1/2 absolute bg-yellow-600 opacity-10 blur-3xl rounded-full w-96 h-96 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-2000"></div>
+      <div className={cn('fixed', 'inset-0', 'overflow-hidden', 'pointer-events-none')}>
+        <div className={cn('-top-40', '-right-40', 'absolute', 'bg-purple-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse')}></div>
+        <div className={cn('-bottom-40', '-left-40', 'absolute', 'bg-orange-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'delay-1000')}></div>
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-yellow-600', 'opacity-10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000')}></div>
       </div>
 
-      <div className="z-10 relative mx-auto p-6 max-w-7xl">
+      <div className={cn('z-10', 'relative', 'mx-auto', 'p-6', 'max-w-7xl')}>
         {/* Current Plan Badge */}
         {currentPlan !== "free" && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex justify-center mb-4"
+            className={cn('flex', 'justify-center', 'mb-4')}
           >
             <div className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 ${
               currentPlan === "premium" 
@@ -378,7 +379,7 @@ export default function Premium() {
               {currentPlan === "premium" ? <Crown size={16} /> : <Rocket size={16} />}
               Current Plan: {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}
               {currentPlan === "pro" && (
-                <span className="flex items-center gap-1 bg-white/20 ml-1 px-1.5 py-0.5 rounded text-xs">
+                <span className={cn('flex', 'items-center', 'gap-1', 'bg-white/20', 'ml-1', 'px-1.5', 'py-0.5', 'rounded', 'text-xs')}>
                   <Coins size={10} />
                   {userCoins} coins
                 </span>
@@ -391,29 +392,29 @@ export default function Premium() {
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="mb-12 text-center"
+          className={cn('mb-12', 'text-center')}
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring" }}
-            className="inline-block bg-gradient-to-br from-yellow-500 to-orange-600 mb-4 p-3 rounded-2xl"
+            className={cn('inline-block', 'bg-gradient-to-br', 'from-yellow-500', 'to-orange-600', 'mb-4', 'p-3', 'rounded-2xl')}
           >
             <Crown size={40} />
           </motion.div>
           
-          <h1 className="bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 mb-4 font-bold text-transparent text-5xl md:text-6xl">
+          <h1 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-yellow-400', 'via-orange-500', 'to-red-500', 'mb-4', 'font-bold', 'text-transparent', 'text-5xl', 'md:text-6xl')}>
             Upgrade Your Experience
           </h1>
           
-          <p className="mx-auto max-w-2xl text-gray-400 text-lg">
+          <p className={cn('mx-auto', 'max-w-2xl', 'text-gray-400', 'text-lg')}>
             Choose the perfect plan for your needs and unlock exclusive features
           </p>
 
           {/* Billing Toggle */}
-          <div className="flex justify-center mt-8">
-            <div className="relative bg-white/10 backdrop-blur-xl p-1 rounded-full">
-              <div className="flex gap-1">
+          <div className={cn('flex', 'justify-center', 'mt-8')}>
+            <div className={cn('relative', 'bg-white/10', 'backdrop-blur-xl', 'p-1', 'rounded-full')}>
+              <div className={cn('flex', 'gap-1')}>
                 {["monthly", "yearly"].map((b) => (
                   <button
                     key={b}
@@ -428,7 +429,7 @@ export default function Premium() {
                     {billing === b && (
                       <motion.div
                         layoutId="billingTab"
-                        className="-z-0 absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full"
+                        className={cn('-z-0', 'absolute', 'inset-0', 'bg-gradient-to-r', 'from-yellow-500', 'to-orange-600', 'rounded-full')}
                         transition={{ type: "spring", duration: 0.5 }}
                       />
                     )}
@@ -443,10 +444,10 @@ export default function Premium() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 bg-green-500/20 mt-4 px-4 py-2 border border-green-500/50 rounded-full"
+              className={cn('inline-flex', 'items-center', 'gap-2', 'bg-green-500/20', 'mt-4', 'px-4', 'py-2', 'border', 'border-green-500/50', 'rounded-full')}
             >
               <Sparkles size={16} className="text-green-400" />
-              <span className="font-medium text-green-400 text-sm">
+              <span className={cn('font-medium', 'text-green-400', 'text-sm')}>
                 Save up to ${savedAmount.toFixed(2)} per year with annual billing
               </span>
             </motion.div>
@@ -454,7 +455,7 @@ export default function Premium() {
         </motion.div>
 
         {/* Plans Grid */}
-        <div className="gap-8 grid grid-cols-1 lg:grid-cols-3 mb-12">
+        <div className={cn('gap-8', 'grid', 'grid-cols-1', 'lg:grid-cols-3', 'mb-12')}>
           {plans.map((plan, index) => {
             const isSelected = selected === plan.id;
             const isHovered = hoveredPlan === plan.id;
@@ -485,9 +486,9 @@ export default function Premium() {
                 } overflow-hidden h-full transition-all duration-300`}>
                   
                   {current && (
-                    <div className="top-4 left-4 z-10 absolute">
-                      <div className="bg-green-500/20 backdrop-blur-sm px-2 py-1 border border-green-500/50 rounded-full">
-                        <span className="flex items-center gap-1 font-medium text-green-400 text-xs">
+                    <div className={cn('top-4', 'left-4', 'z-10', 'absolute')}>
+                      <div className={cn('bg-green-500/20', 'backdrop-blur-sm', 'px-2', 'py-1', 'border', 'border-green-500/50', 'rounded-full')}>
+                        <span className={cn('flex', 'items-center', 'gap-1', 'font-medium', 'text-green-400', 'text-xs')}>
                           <Check size={12} />
                           CURRENT
                         </span>
@@ -496,17 +497,17 @@ export default function Premium() {
                   )}
 
                   {plan.popular && !current && (
-                    <div className="top-4 right-4 z-10 absolute">
-                      <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-3 py-1 rounded-full">
-                        <span className="font-bold text-xs">POPULAR</span>
+                    <div className={cn('top-4', 'right-4', 'z-10', 'absolute')}>
+                      <div className={cn('bg-gradient-to-r', 'from-cyan-500', 'to-blue-600', 'px-3', 'py-1', 'rounded-full')}>
+                        <span className={cn('font-bold', 'text-xs')}>POPULAR</span>
                       </div>
                     </div>
                   )}
 
                   {plan.best && !current && (
-                    <div className="top-4 right-4 z-10 absolute">
-                      <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-3 py-1 rounded-full animate-pulse">
-                        <span className="font-bold text-xs">BEST VALUE</span>
+                    <div className={cn('top-4', 'right-4', 'z-10', 'absolute')}>
+                      <div className={cn('bg-gradient-to-r', 'from-yellow-500', 'to-orange-600', 'px-3', 'py-1', 'rounded-full', 'animate-pulse')}>
+                        <span className={cn('font-bold', 'text-xs')}>BEST VALUE</span>
                       </div>
                     </div>
                   )}
@@ -516,30 +517,30 @@ export default function Premium() {
                       <plan.icon size={28} />
                     </div>
 
-                    <h2 className="mb-2 font-bold text-2xl">{plan.name}</h2>
-                    <p className="mb-4 text-gray-400 text-sm">{plan.desc}</p>
+                    <h2 className={cn('mb-2', 'font-bold', 'text-2xl')}>{plan.name}</h2>
+                    <p className={cn('mb-4', 'text-gray-400', 'text-sm')}>{plan.desc}</p>
 
                     <div className="mb-6">
-                      <div className="flex items-baseline gap-1">
-                        <span className="font-bold text-4xl">{plan.price[billing]}</span>
+                      <div className={cn('flex', 'items-baseline', 'gap-1')}>
+                        <span className={cn('font-bold', 'text-4xl')}>{plan.price[billing]}</span>
                         <span className="text-gray-400">/{billing === "monthly" ? "month" : "year"}</span>
                       </div>
                       {billing === "yearly" && annualSavings > 0 && (
-                        <p className="mt-1 text-green-400 text-xs">Save ${annualSavings.toFixed(2)}/year</p>
+                        <p className={cn('mt-1', 'text-green-400', 'text-xs')}>Save ${annualSavings.toFixed(2)}/year</p>
                       )}
                     </div>
 
-                    <ul className="space-y-3 mb-8">
+                    <ul className={cn('space-y-3', 'mb-8')}>
                       {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-sm">
+                        <li key={idx} className={cn('flex', 'items-center', 'gap-2', 'text-sm')}>
                           {feature.included ? (
                             feature.icon === Check ? (
-                              <Check size={16} className="flex-shrink-0 text-green-400" />
+                              <Check size={16} className={cn('flex-shrink-0', 'text-green-400')} />
                             ) : (
-                              <feature.icon size={16} className="flex-shrink-0 text-green-400" />
+                              <feature.icon size={16} className={cn('flex-shrink-0', 'text-green-400')} />
                             )
                           ) : (
-                            <X size={16} className="flex-shrink-0 text-gray-500" />
+                            <X size={16} className={cn('flex-shrink-0', 'text-gray-500')} />
                           )}
                           <span className={feature.included ? "text-gray-200" : "text-gray-500"}>
                             {feature.text}
@@ -564,8 +565,8 @@ export default function Premium() {
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {loading && selected === plan.id ? (
-                        <div className="flex justify-center items-center gap-2">
-                          <div className="border-2 border-white/30 border-t-white rounded-full w-4 h-4 animate-spin" />
+                        <div className={cn('flex', 'justify-center', 'items-center', 'gap-2')}>
+                          <div className={cn('border-2', 'border-white/30', 'border-t-white', 'rounded-full', 'w-4', 'h-4', 'animate-spin')} />
                           Processing...
                         </div>
                       ) : (
@@ -584,19 +585,19 @@ export default function Premium() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-12 text-center"
+          className={cn('mb-12', 'text-center')}
         >
-          <p className="mb-3 text-gray-400 text-sm">Secure payment methods</p>
-          <div className="flex justify-center items-center gap-6">
-            <div className="flex items-center gap-2 text-gray-300">
+          <p className={cn('mb-3', 'text-gray-400', 'text-sm')}>Secure payment methods</p>
+          <div className={cn('flex', 'justify-center', 'items-center', 'gap-6')}>
+            <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}>
               <CreditCard size={20} className="text-purple-400" />
               <span>Card</span>
             </div>
-            <div className="flex items-center gap-2 text-gray-300">
+            <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}>
               <Smartphone size={20} className="text-red-400" />
               <span>Vodafone Cash</span>
             </div>
-            <div className="flex items-center gap-2 text-gray-300">
+            <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}>
               <Building size={20} className="text-green-400" />
               <span>InstaPay</span>
             </div>
@@ -608,22 +609,22 @@ export default function Premium() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-16 mb-12"
+          className={cn('mt-16', 'mb-12')}
         >
-          <div className="mb-8 text-center">
-            <h2 className="mb-2 font-bold text-3xl">Compare All Features</h2>
+          <div className={cn('mb-8', 'text-center')}>
+            <h2 className={cn('mb-2', 'font-bold', 'text-3xl')}>Compare All Features</h2>
             <p className="text-gray-400">Everything you need to make the right choice</p>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
+          <div className={cn('bg-white/5', 'backdrop-blur-xl', 'border', 'border-white/10', 'rounded-2xl', 'overflow-hidden')}>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-white/5 border-white/10 border-b">
+                <thead className={cn('bg-white/5', 'border-white/10', 'border-b')}>
                   <tr>
-                    <th className="p-4 text-left">Feature</th>
-                    <th className="p-4 text-center">Free</th>
-                    <th className="p-4 text-center">Pro</th>
-                    <th className="p-4 text-center">Premium</th>
+                    <th className={cn('p-4', 'text-left')}>Feature</th>
+                    <th className={cn('p-4', 'text-center')}>Free</th>
+                    <th className={cn('p-4', 'text-center')}>Pro</th>
+                    <th className={cn('p-4', 'text-center')}>Premium</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -637,27 +638,27 @@ export default function Premium() {
                     { feature: "Custom Branding", free: false, pro: false, premium: true },
                     { feature: "API Access", free: false, pro: false, premium: true },
                   ].map((row, idx) => (
-                    <tr key={idx} className="hover:bg-white/5 border-white/5 border-b transition-colors">
-                      <td className="p-4 font-medium">{row.feature}</td>
-                      <td className="p-4 text-center">
+                    <tr key={idx} className={cn('hover:bg-white/5', 'border-white/5', 'border-b', 'transition-colors')}>
+                      <td className={cn('p-4', 'font-medium')}>{row.feature}</td>
+                      <td className={cn('p-4', 'text-center')}>
                         {typeof row.free === 'boolean' ? (
-                          row.free ? <Check size={18} className="mx-auto text-green-400" /> : <X size={18} className="mx-auto text-gray-500" />
+                          row.free ? <Check size={18} className={cn('mx-auto', 'text-green-400')} /> : <X size={18} className={cn('mx-auto', 'text-gray-500')} />
                         ) : (
                           <span className="text-sm">{row.free}</span>
                         )}
                       </td>
-                      <td className="p-4 text-center">
+                      <td className={cn('p-4', 'text-center')}>
                         {typeof row.pro === 'boolean' ? (
-                          row.pro ? <Check size={18} className="mx-auto text-green-400" /> : <X size={18} className="mx-auto text-gray-500" />
+                          row.pro ? <Check size={18} className={cn('mx-auto', 'text-green-400')} /> : <X size={18} className={cn('mx-auto', 'text-gray-500')} />
                         ) : (
-                          <span className="font-medium text-cyan-400 text-sm">{row.pro}</span>
+                          <span className={cn('font-medium', 'text-cyan-400', 'text-sm')}>{row.pro}</span>
                         )}
                       </td>
-                      <td className="p-4 text-center">
+                      <td className={cn('p-4', 'text-center')}>
                         {typeof row.premium === 'boolean' ? (
-                          row.premium ? <Check size={18} className="mx-auto text-green-400" /> : <X size={18} className="mx-auto text-gray-500" />
+                          row.premium ? <Check size={18} className={cn('mx-auto', 'text-green-400')} /> : <X size={18} className={cn('mx-auto', 'text-gray-500')} />
                         ) : (
-                          <span className="font-medium text-yellow-400 text-sm">{row.premium}</span>
+                          <span className={cn('font-medium', 'text-yellow-400', 'text-sm')}>{row.premium}</span>
                         )}
                       </td>
                     </tr>
@@ -673,14 +674,14 @@ export default function Premium() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 mb-8"
+          className={cn('mt-12', 'mb-8')}
         >
-          <div className="mb-8 text-center">
-            <h2 className="mb-2 font-bold text-2xl">Frequently Asked Questions</h2>
+          <div className={cn('mb-8', 'text-center')}>
+            <h2 className={cn('mb-2', 'font-bold', 'text-2xl')}>Frequently Asked Questions</h2>
             <p className="text-gray-400">Got questions? We've got answers</p>
           </div>
 
-          <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
+          <div className={cn('gap-4', 'grid', 'grid-cols-1', 'md:grid-cols-2')}>
             {[
               { q: "Can I change my plan later?", a: "Yes, you can upgrade or downgrade your plan at any time from your dashboard." },
               { q: "Is there a free trial?", a: "We offer a free plan with basic features. Upgrade anytime to unlock more!" },
@@ -694,13 +695,13 @@ export default function Premium() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 + idx * 0.05 }}
-                className="bg-white/5 backdrop-blur-xl p-4 border border-white/10 hover:border-purple-500/30 rounded-xl transition-all duration-200"
+                className={cn('bg-white/5', 'backdrop-blur-xl', 'p-4', 'border', 'border-white/10', 'hover:border-purple-500/30', 'rounded-xl', 'transition-all', 'duration-200')}
               >
-                <h3 className="flex items-center gap-2 mb-2 font-semibold">
+                <h3 className={cn('flex', 'items-center', 'gap-2', 'mb-2', 'font-semibold')}>
                   <span className="text-purple-400">💡</span>
                   {faq.q}
                 </h3>
-                <p className="text-gray-400 text-sm">{faq.a}</p>
+                <p className={cn('text-gray-400', 'text-sm')}>{faq.a}</p>
               </motion.div>
             ))}
           </div>
@@ -711,14 +712,14 @@ export default function Premium() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 mt-8 p-4 border border-purple-500/30 rounded-xl"
+          className={cn('bg-gradient-to-r', 'from-purple-500/10', 'to-pink-500/10', 'mt-8', 'p-4', 'border', 'border-purple-500/30', 'rounded-xl')}
         >
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-3">
+          <div className={cn('flex', 'flex-wrap', 'justify-between', 'items-center', 'gap-4')}>
+            <div className={cn('flex', 'items-center', 'gap-3')}>
               <Coins size={24} className="text-purple-400" />
               <div>
                 <p className="font-semibold">About Coins</p>
-                <p className="text-gray-400 text-sm">
+                <p className={cn('text-gray-400', 'text-sm')}>
                   Coins are used to reveal anonymous senders. Pro users get 100 coins/month, Premium get 300 coins/month.
                   Each reveal costs 5 coins.
                 </p>
@@ -728,12 +729,12 @@ export default function Premium() {
         </motion.div>
 
         {/* Back Button */}
-        <div className="mt-8 text-center">
+        <div className={cn('mt-8', 'text-center')}>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/dashboard")}
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className={cn('inline-flex', 'items-center', 'gap-2', 'text-gray-400', 'hover:text-white', 'transition-colors')}
           >
             <ArrowLeft size={18} />
             Back to Dashboard
