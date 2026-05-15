@@ -50,7 +50,6 @@ export default defineConfig(({ mode }) => {
       cssMinify: true,
       assetsInlineLimit: 4096,
       emptyOutDir: true,
-      // ✅ تم إزالة rollupOptions بالكامل
     },
 
     css: {
