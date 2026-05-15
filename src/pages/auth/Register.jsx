@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { registerAPI } from "../../api/auth";
+import { cn } from "@/lib/utils";
 import {
   User,
   Mail,
@@ -183,6 +184,7 @@ export default function Register() {
         lastName: form.lastName.trim(),
         email: form.email.trim(),
         password: form.password,
+        confirmPassword: form.confirmPassword,
         phone: form.phone.trim(),
         age: Number(form.age),
       });
@@ -215,19 +217,19 @@ export default function Register() {
   };
 
   return (
-    <div className="relative flex justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 min-h-screen overflow-hidden">
+    <div className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'p-4', 'min-h-screen', 'overflow-hidden')}>
       
       {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="-top-40 -right-40 absolute bg-purple-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse mix-blend-multiply filter"></div>
-        <div className="-bottom-40 -left-40 absolute bg-blue-600 opacity-20 blur-3xl rounded-full w-80 h-80 animate-pulse delay-1000 mix-blend-multiply filter"></div>
-        <div className="top-1/2 left-1/2 absolute bg-pink-600 opacity-10 blur-3xl rounded-full w-96 h-96 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-2000 transform mix-blend-multiply filter"></div>
+      <div className={cn('fixed', 'inset-0', 'overflow-hidden', 'pointer-events-none')}>
+        <div className={cn('-top-40', '-right-40', 'absolute', 'bg-purple-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('-bottom-40', '-left-40', 'absolute', 'bg-blue-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'delay-1000', 'mix-blend-multiply', 'filter')}></div>
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-pink-600', 'opacity-10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000', 'transform', 'mix-blend-multiply', 'filter')}></div>
         
         {/* Floating particles */}
         {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-white/20 rounded-full w-1 h-1"
+            className={cn('absolute', 'bg-white/20', 'rounded-full', 'w-1', 'h-1')}
             initial={{
               x: Math.random() * window.innerWidth,
               y: Math.random() * window.innerHeight,
@@ -253,24 +255,24 @@ export default function Register() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="z-10 relative w-full max-w-2xl"
+        className={cn('z-10', 'relative', 'w-full', 'max-w-2xl')}
       >
-        <div className="bg-gradient-to-br from-white/10 to-transparent shadow-2xl backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden">
-          <div className="p-6 md:p-8">
+        <div className={cn('bg-gradient-to-br', 'from-white/10', 'to-transparent', 'shadow-2xl', 'backdrop-blur-xl', 'border', 'border-white/10', 'rounded-3xl', 'overflow-hidden')}>
+          <div className={cn('p-6', 'md:p-8')}>
             {/* Header */}
-            <div className="mb-6 text-center">
+            <div className={cn('mb-6', 'text-center')}>
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className="inline-block bg-gradient-to-br from-purple-500 to-pink-500 mb-4 p-3 rounded-2xl"
+                className={cn('inline-block', 'bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-4', 'p-3', 'rounded-2xl')}
               >
                 <UserPlus size={32} />
               </motion.div>
-              <h2 className="bg-clip-text bg-gradient-to-r from-white to-gray-400 font-bold text-transparent text-3xl">
+              <h2 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-gray-400', 'font-bold', 'text-transparent', 'text-3xl')}>
                 Create Account
               </h2>
-              <p className="mt-2 text-gray-400 text-sm">
+              <p className={cn('mt-2', 'text-gray-400', 'text-sm')}>
                 Join our community and start receiving anonymous messages
               </p>
             </div>
@@ -278,13 +280,13 @@ export default function Register() {
             {/* Form */}
             <div className="space-y-4">
               {/* Name Fields */}
-              <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
+              <div className={cn('gap-4', 'grid', 'grid-cols-1', 'md:grid-cols-2')}>
                 <div>
-                  <label className="block mb-2 font-medium text-gray-300 text-sm">
+                  <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                     First Name
                   </label>
                   <div className={`relative transition-all duration-200 ${focusedField === 'firstName' ? 'scale-[1.02]' : ''}`}>
-                    <User size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                    <User size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                     <input
                       name="firstName"
                       value={form.firstName}
@@ -309,7 +311,7 @@ export default function Register() {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                        className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                       >
                         <AlertCircle size={12} />
                         {errors.firstName}
@@ -319,11 +321,11 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label className="block mb-2 font-medium text-gray-300 text-sm">
+                  <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                     Last Name
                   </label>
                   <div className={`relative transition-all duration-200 ${focusedField === 'lastName' ? 'scale-[1.02]' : ''}`}>
-                    <User size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                    <User size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                     <input
                       name="lastName"
                       value={form.lastName}
@@ -348,7 +350,7 @@ export default function Register() {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                        className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                       >
                         <AlertCircle size={12} />
                         {errors.lastName}
@@ -360,11 +362,11 @@ export default function Register() {
 
               {/* Email */}
               <div>
-                <label className="block mb-2 font-medium text-gray-300 text-sm">
+                <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                   Email Address
                 </label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'email' ? 'scale-[1.02]' : ''}`}>
-                  <Mail size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                  <Mail size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                   <input
                     name="email"
                     type="email"
@@ -390,7 +392,7 @@ export default function Register() {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                      className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                     >
                       <AlertCircle size={12} />
                       {errors.email}
@@ -400,13 +402,13 @@ export default function Register() {
               </div>
 
               {/* Phone and Age */}
-              <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
+              <div className={cn('gap-4', 'grid', 'grid-cols-1', 'md:grid-cols-2')}>
                 <div>
-                  <label className="block mb-2 font-medium text-gray-300 text-sm">
+                  <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                     Phone Number
                   </label>
                   <div className={`relative transition-all duration-200 ${focusedField === 'phone' ? 'scale-[1.02]' : ''}`}>
-                    <Phone size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                    <Phone size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                     <input
                       name="phone"
                       value={form.phone}
@@ -431,7 +433,7 @@ export default function Register() {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                        className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                       >
                         <AlertCircle size={12} />
                         {errors.phone}
@@ -441,11 +443,11 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label className="block mb-2 font-medium text-gray-300 text-sm">
+                  <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                     Age
                   </label>
                   <div className={`relative transition-all duration-200 ${focusedField === 'age' ? 'scale-[1.02]' : ''}`}>
-                    <Calendar size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                    <Calendar size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                     <input
                       name="age"
                       type="number"
@@ -471,7 +473,7 @@ export default function Register() {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                        className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                       >
                         <AlertCircle size={12} />
                         {errors.age}
@@ -483,11 +485,11 @@ export default function Register() {
 
               {/* Password */}
               <div>
-                <label className="block mb-2 font-medium text-gray-300 text-sm">
+                <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                   Password
                 </label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'password' ? 'scale-[1.02]' : ''}`}>
-                  <Lock size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                  <Lock size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                   <input
                     name="password"
                     type={showPassword ? "text" : "password"}
@@ -509,7 +511,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="top-1/2 right-3 absolute text-gray-400 hover:text-white transition-colors -translate-y-1/2 transform"
+                    className={cn('top-1/2', 'right-3', 'absolute', 'text-gray-400', 'hover:text-white', 'transition-colors', '-translate-y-1/2', 'transform')}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -522,7 +524,7 @@ export default function Register() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-2"
                   >
-                    <div className="flex justify-between items-center mb-1">
+                    <div className={cn('flex', 'justify-between', 'items-center', 'mb-1')}>
                       <span className={`text-xs ${strengthConfig[strength]?.textColor || 'text-gray-400'}`}>
                         Password Strength: {strengthConfig[strength]?.label || "Very Weak"}
                       </span>
@@ -530,7 +532,7 @@ export default function Register() {
                         <Award size={14} className="text-emerald-400" />
                       )}
                     </div>
-                    <div className="bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                    <div className={cn('bg-gray-700', 'rounded-full', 'h-1.5', 'overflow-hidden')}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: strengthConfig[strength]?.width || "0%" }}
@@ -538,9 +540,9 @@ export default function Register() {
                       />
                     </div>
                     {passwordSuggestions.length > 0 && strength < 3 && (
-                      <div className="space-y-1 mt-2">
+                      <div className={cn('space-y-1', 'mt-2')}>
                         {passwordSuggestions.map((suggestion, idx) => (
-                          <p key={idx} className="flex items-center gap-1 text-gray-400 text-xs">
+                          <p key={idx} className={cn('flex', 'items-center', 'gap-1', 'text-gray-400', 'text-xs')}>
                             <XCircle size={10} className="text-yellow-400" />
                             {suggestion}
                           </p>
@@ -548,7 +550,7 @@ export default function Register() {
                       </div>
                     )}
                     {strength === 4 && (
-                      <p className="flex items-center gap-1 mt-1 text-emerald-400 text-xs">
+                      <p className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-emerald-400', 'text-xs')}>
                         <CheckCircle size={12} />
                         Strong password!
                       </p>
@@ -562,7 +564,7 @@ export default function Register() {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                      className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                     >
                       <AlertCircle size={12} />
                       {errors.password}
@@ -573,11 +575,11 @@ export default function Register() {
 
               {/* Confirm Password */}
               <div>
-                <label className="block mb-2 font-medium text-gray-300 text-sm">
+                <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                   Confirm Password
                 </label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'confirmPassword' ? 'scale-[1.02]' : ''}`}>
-                  <Lock size={18} className="top-1/2 left-3 absolute text-gray-400 -translate-y-1/2 transform" />
+                  <Lock size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
                   <input
                     name="confirmPassword"
                     type={showConfirm ? "text" : "password"}
@@ -599,7 +601,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setShowConfirm(!showConfirm)}
-                    className="top-1/2 right-3 absolute text-gray-400 hover:text-white transition-colors -translate-y-1/2 transform"
+                    className={cn('top-1/2', 'right-3', 'absolute', 'text-gray-400', 'hover:text-white', 'transition-colors', '-translate-y-1/2', 'transform')}
                   >
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -610,7 +612,7 @@ export default function Register() {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="flex items-center gap-1 mt-1 text-red-400 text-xs"
+                      className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-red-400', 'text-xs')}
                     >
                       <XCircle size={12} />
                       {errors.confirmPassword}
@@ -620,7 +622,7 @@ export default function Register() {
                     <motion.p
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-1 mt-1 text-green-400 text-xs"
+                      className={cn('flex', 'items-center', 'gap-1', 'mt-1', 'text-green-400', 'text-xs')}
                     >
                       <CheckCircle size={12} />
                       Passwords match
@@ -630,19 +632,19 @@ export default function Register() {
               </div>
 
               {/* Terms and Conditions */}
-              <div className="flex items-start gap-3 pt-2">
+              <div className={cn('flex', 'items-start', 'gap-3', 'pt-2')}>
                 <input
                   type="checkbox"
                   checked={accepted}
                   onChange={() => setAccepted(!accepted)}
-                  className="bg-white/10 mt-0.5 border-white/20 rounded focus:ring-purple-500 focus:ring-offset-0 w-4 h-4 text-purple-500"
+                  className={cn('bg-white/10', 'mt-0.5', 'border-white/20', 'rounded', 'focus:ring-purple-500', 'focus:ring-offset-0', 'w-4', 'h-4', 'text-purple-500')}
                 />
-                <label className="text-gray-300 text-sm">
+                <label className={cn('text-gray-300', 'text-sm')}>
                   I accept the{" "}
                   <button
                     type="button"
                     onClick={() => toast("Terms and Conditions - Coming Soon")}
-                    className="text-purple-400 hover:text-purple-300 transition-colors"
+                    className={cn('text-purple-400', 'hover:text-purple-300', 'transition-colors')}
                   >
                     Terms of Service
                   </button>{" "}
@@ -650,7 +652,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => toast("Privacy Policy - Coming Soon")}
-                    className="text-purple-400 hover:text-purple-300 transition-colors"
+                    className={cn('text-purple-400', 'hover:text-purple-300', 'transition-colors')}
                   >
                     Privacy Policy
                   </button>
@@ -662,7 +664,7 @@ export default function Register() {
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    className="flex items-center gap-1 text-red-400 text-xs"
+                    className={cn('flex', 'items-center', 'gap-1', 'text-red-400', 'text-xs')}
                   >
                     <AlertCircle size={12} />
                     {errors.terms}
@@ -676,33 +678,33 @@ export default function Register() {
                 whileTap={{ scale: loading ? 1 : 0.98 }}
                 onClick={handleRegister}
                 disabled={loading}
-                className="group relative bg-gradient-to-r from-purple-500 hover:from-purple-600 to-pink-500 hover:to-pink-600 disabled:opacity-50 shadow-lg py-3 rounded-xl w-full overflow-hidden font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed"
+                className={cn('group', 'relative', 'bg-gradient-to-r', 'from-purple-500', 'hover:from-purple-600', 'to-pink-500', 'hover:to-pink-600', 'disabled:opacity-50', 'shadow-lg', 'py-3', 'rounded-xl', 'w-full', 'overflow-hidden', 'font-semibold', 'text-white', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}
               >
-                <span className="z-10 relative flex justify-center items-center gap-2">
+                <span className={cn('z-10', 'relative', 'flex', 'justify-center', 'items-center', 'gap-2')}>
                   {loading ? (
                     <>
-                      <div className="border-2 border-white/30 border-t-white rounded-full w-5 h-5 animate-spin" />
+                      <div className={cn('border-2', 'border-white/30', 'border-t-white', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                       Creating Account...
                     </>
                   ) : (
                     <>
                       <Sparkles size={18} />
                       Register Now
-                      <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                      <ArrowRight size={18} className={cn('transition-transform', 'group-hover:translate-x-1')} />
                     </>
                   )}
                 </span>
               </motion.button>
 
               {/* Login Link */}
-              <div className="pt-4 text-center">
-                <p className="text-gray-400 text-sm">
+              <div className={cn('pt-4', 'text-center')}>
+                <p className={cn('text-gray-400', 'text-sm')}>
                   Already have an account?{" "}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => navigate("/login")}
-                    className="inline-flex items-center gap-1 font-semibold text-purple-400 hover:text-purple-300 transition-colors"
+                    className={cn('inline-flex', 'items-center', 'gap-1', 'font-semibold', 'text-purple-400', 'hover:text-purple-300', 'transition-colors')}
                   >
                     Sign In
                     <ArrowRight size={14} />
@@ -711,8 +713,8 @@ export default function Register() {
               </div>
 
               {/* Security Note */}
-              <div className="bg-purple-500/10 mt-4 p-3 border border-purple-500/30 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-400 text-xs">
+              <div className={cn('bg-purple-500/10', 'mt-4', 'p-3', 'border', 'border-purple-500/30', 'rounded-lg')}>
+                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-400', 'text-xs')}>
                   <Shield size={14} className="text-purple-400" />
                   <span>Your information is encrypted and secure. We never share your data.</span>
                 </div>
@@ -733,7 +735,7 @@ export default function Register() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="hidden lg:block bottom-10 left-10 fixed opacity-20 pointer-events-none"
+        className={cn('hidden', 'lg:block', 'bottom-10', 'left-10', 'fixed', 'opacity-20', 'pointer-events-none')}
       >
         <Heart size={48} className="text-pink-500" />
       </motion.div>
@@ -749,7 +751,7 @@ export default function Register() {
           ease: "easeInOut",
           delay: 1,
         }}
-        className="hidden lg:block top-10 right-10 fixed opacity-20 pointer-events-none"
+        className={cn('hidden', 'lg:block', 'top-10', 'right-10', 'fixed', 'opacity-20', 'pointer-events-none')}
       >
         <Shield size={48} className="text-purple-500" />
       </motion.div>
