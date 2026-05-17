@@ -1,3 +1,4 @@
+// frontend/src/pages/auth/Login.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,10 +19,13 @@ import {
   AlertCircle,
   UserPlus,
   Key,
-  MessageCircle
+  MessageCircle,
+  Chrome,
+  Facebook,
+  Github,
+  Apple,
+  Twitter
 } from "lucide-react";
-
-// باقي الكود
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,13 +36,13 @@ export default function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState(null);
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
-
-  // ✅ التحقق من وجود redirect بعد تسجيل الدخول
   const [redirectUrl, setRedirectUrl] = useState(null);
+  const [hoveredSocial, setHoveredSocial] = useState(null);
 
   // Auto login check
   useEffect(() => {
@@ -53,7 +57,6 @@ export default function Login() {
       }
       const role = decoded.role;
       
-      // ✅ التحقق من وجود redirect URL
       const savedRedirect = localStorage.getItem("redirectAfterLogin");
       if (savedRedirect) {
         localStorage.removeItem("redirectAfterLogin");
@@ -66,7 +69,6 @@ export default function Login() {
     }
   }, [navigate]);
 
-  // ✅ حفظ redirect URL عند تحميل الصفحة
   useEffect(() => {
     const savedRedirect = localStorage.getItem("redirectAfterLogin");
     if (savedRedirect) {
@@ -158,7 +160,6 @@ export default function Login() {
 
       toast.success("Welcome back! 🎉");
 
-      // ✅ التحقق من وجود redirect URL بعد تسجيل الدخول
       const savedRedirect = localStorage.getItem("redirectAfterLogin");
       
       setTimeout(() => {
@@ -180,6 +181,35 @@ export default function Login() {
     }
   };
 
+  // ✅ Social Login Handlers
+  const handleSocialLogin = (provider) => {
+    setSocialLoading(provider);
+    
+    let authUrl = "";
+    switch (provider) {
+      case "google":
+        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+        break;
+      case "facebook":
+        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/facebook`;
+        break;
+      case "github":
+        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/github`;
+        break;
+      case "apple":
+        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/apple`;
+        break;
+      case "twitter":
+        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/twitter`;
+        break;
+      default:
+        setSocialLoading(null);
+        return;
+    }
+    
+    window.location.href = authUrl;
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") login();
   };
@@ -192,6 +222,65 @@ export default function Login() {
       setRememberMe(true);
     }
   }, []);
+
+  // Social buttons configuration (مصغرة عشان البوكس يبقى قصير)
+  const socialButtons = [
+    { 
+      provider: "google", 
+      label: "Google", 
+      icon: Chrome, 
+      bgGradient: "bg-gradient-to-r from-red-600/15 to-red-600/5",
+      hoverBg: "hover:from-red-600/25 hover:to-red-600/10",
+      borderColor: "border-red-500/30",
+      hoverBorder: "hover:border-red-500/50",
+      color: "text-red-400",
+      iconColor: "text-red-500"
+    },
+    { 
+      provider: "facebook", 
+      label: "Facebook", 
+      icon: Facebook, 
+      bgGradient: "bg-gradient-to-r from-blue-700/15 to-blue-700/5",
+      hoverBg: "hover:from-blue-700/25 hover:to-blue-700/10",
+      borderColor: "border-blue-500/30",
+      hoverBorder: "hover:border-blue-500/50",
+      color: "text-blue-400",
+      iconColor: "text-blue-500"
+    },
+    { 
+      provider: "github", 
+      label: "GitHub", 
+      icon: Github, 
+      bgGradient: "bg-gradient-to-r from-gray-600/15 to-gray-600/5",
+      hoverBg: "hover:from-gray-600/25 hover:to-gray-600/10",
+      borderColor: "border-gray-500/30",
+      hoverBorder: "hover:border-gray-500/50",
+      color: "text-gray-400",
+      iconColor: "text-gray-400"
+    },
+    { 
+      provider: "apple", 
+      label: "Apple", 
+      icon: Apple, 
+      bgGradient: "bg-gradient-to-r from-white/10 to-white/5",
+      hoverBg: "hover:from-white/20 hover:to-white/10",
+      borderColor: "border-white/20",
+      hoverBorder: "hover:border-white/40",
+      color: "text-white",
+      iconColor: "text-white"
+    },
+    { 
+      provider: "twitter", 
+      label: "X", 
+      icon: Twitter, 
+      bgGradient: "bg-gradient-to-r from-white/10 to-white/5",
+      hoverBg: "hover:from-white/20 hover:to-white/10",
+      borderColor: "border-white/20",
+      hoverBorder: "hover:border-white/40",
+      color: "text-white",
+      iconColor: "text-white"
+    },
+  ];
 
   return (
     <div className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'px-4', 'min-h-screen', 'overflow-hidden')}>
@@ -228,7 +317,7 @@ export default function Login() {
         ))}
       </div>
 
-      {/* ✅ Banner for redirect info (if coming from another page) */}
+      {/* Banner for redirect info */}
       <AnimatePresence>
         {redirectUrl && (
           <motion.div
@@ -478,6 +567,35 @@ export default function Login() {
                 <div className={cn('relative', 'flex', 'justify-center', 'text-sm')}>
                   <span className={cn('bg-transparent', 'px-2', 'text-gray-500')}>or</span>
                 </div>
+              </div>
+
+              {/* Social Login Buttons - مصغرة ومرتبة جنب بعض */}
+              <div className={cn('grid', 'grid-cols-5', 'gap-2', 'mb-6')}>
+                {socialButtons.map((btn) => (
+                  <motion.button
+                    key={btn.provider}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleSocialLogin(btn.provider)}
+                    disabled={socialLoading !== null}
+                    className={cn(
+                      'flex', 'flex-col', 'items-center', 'justify-center', 'gap-1',
+                      'py-2', 'rounded-xl', 'transition-all', 'duration-200',
+                      btn.bgGradient, btn.hoverBg,
+                      'border', btn.borderColor, btn.hoverBorder,
+                      'disabled:opacity-50', 'disabled:cursor-not-allowed'
+                    )}
+                  >
+                    {socialLoading === btn.provider ? (
+                      <div className={cn('border-2', 'border-white/30', 'border-t-white', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
+                    ) : (
+                      <>
+                        <btn.icon size={20} className={cn(btn.iconColor, 'transition-transform duration-200', 'group-hover:scale-110')} />
+                        <span className={cn('text-gray-300', 'text-xs')}>{btn.label}</span>
+                      </>
+                    )}
+                  </motion.button>
+                ))}
               </div>
 
               {/* Register Link */}

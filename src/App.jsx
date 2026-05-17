@@ -11,11 +11,12 @@ import { jwtDecode } from "jwt-decode";
 import { Toaster } from "react-hot-toast";
 
 // Pages - Auth
-import Login from "./pages/auth/login";
+import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ConfirmEmail from "./pages/auth/ConfirmEmail";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import AuthSuccess from "./pages/auth/AuthSuccess";
 
 // Pages - App (User)
 import Dashboard from "./pages/app/Dashboard";
@@ -23,7 +24,7 @@ import Messages from "./pages/app/Messages";
 import PublicProfile from "./pages/app/PublicProfile";
 import Premium from "./pages/app/Premium";
 import PaymentSuccess from "./pages/app/PaymentSuccess";
-import ProfileSettings from "./pages/app/ProfileSettings"; // ✅ أضفنا هذا
+import ProfileSettings from "./pages/app/ProfileSettings";
 
 // Pages - Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -44,7 +45,6 @@ const isValidId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 const PublicProfileWrapper = () => {
   const { userId, username } = useParams();
 
-  // Check if we have a valid ID or username
   if (userId && !isValidId(userId) && !username) {
     return <Navigate to="/" replace />;
   }
@@ -61,7 +61,6 @@ const getUserFromToken = (token) => {
 
     const decoded = jwtDecode(token);
 
-    // Check if expired
     if (decoded.exp * 1000 < Date.now()) {
       localStorage.clear();
       return null;
@@ -81,7 +80,6 @@ const getRedirectPath = (token) => {
 
   if (!user) return "/login";
 
-  // Role 0 = Admin, Role 1 = User
   return user.role === 0 ? "/admin" : "/dashboard";
 };
 
@@ -104,9 +102,6 @@ export default function App() {
   const [token, setToken] = useState(localStorage.getItem("accessToken"));
   const [authChecked, setAuthChecked] = useState(false);
 
-  // =========================
-  // 🔄 SYNC AUTH STATE WITH STORAGE
-  // =========================
   useEffect(() => {
     const syncAuth = () => {
       const newToken = localStorage.getItem("accessToken");
@@ -114,16 +109,10 @@ export default function App() {
       setAuthChecked(true);
     };
 
-    // Initial check
     syncAuth();
 
-    // Listen for storage events (when token changes in another tab)
     window.addEventListener("storage", syncAuth);
-    
-    // Listen for focus events (when tab becomes active)
     window.addEventListener("focus", syncAuth);
-    
-    // Custom event for login/logout
     window.addEventListener("authChange", syncAuth);
 
     return () => {
@@ -133,12 +122,10 @@ export default function App() {
     };
   }, []);
 
-  // Helper to trigger auth change event
   const triggerAuthChange = () => {
     window.dispatchEvent(new Event("authChange"));
   };
 
-  // Make triggerAuthChange available globally for logout/login
   useEffect(() => {
     window.triggerAuthChange = triggerAuthChange;
     return () => {
@@ -148,7 +135,6 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {/* Toast Notifications */}
       <Toaster
         position="top-center"
         reverseOrder={false}
@@ -233,6 +219,9 @@ export default function App() {
           }
         />
 
+        {/* ✅ SOCIAL LOGIN SUCCESS CALLBACK */}
+        <Route path="/auth-success" element={<AuthSuccess />} />
+
         {/* 👤 PUBLIC PROFILE (Anyone can view) */}
         <Route path="/profile/:userId" element={<PublicProfileWrapper />} />
         <Route path="/profile/:username" element={<PublicProfileWrapper />} />
@@ -275,7 +264,7 @@ export default function App() {
           }
         />
 
-        {/* ✅ PROFİLE SETTINGS (New Route) */}
+        {/* ✅ PROFILE SETTINGS */}
         <Route
           path="/profile-settings"
           element={

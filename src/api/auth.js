@@ -152,7 +152,6 @@ export const facebookLoginAPI = async (accessToken) => {
 // ✅ GitHub Login API
 export const githubLoginAPI = async (code) => {
   try {
-    // GitHub OAuth بيستخدم `code` مش `accessToken` مباشرة
     const response = await API.post("/auth/github-login", { code });
     
     const accessToken = response.data?.accessToken || response.data?.data?.accessToken;
@@ -211,7 +210,6 @@ export const appleLoginAPI = async (authorizationCode) => {
 // ✅ X (Twitter) Login API
 export const twitterLoginAPI = async (oauthToken, oauthVerifier) => {
   try {
-    // Twitter OAuth 1.0a بيستخدم token و verifier
     const response = await API.post("/auth/twitter-login", { 
       oauthToken, 
       oauthVerifier 
