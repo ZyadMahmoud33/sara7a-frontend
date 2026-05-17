@@ -7,7 +7,7 @@ import API from "./axios.js";
 const AUTH_ENDPOINTS = {
   LOGIN: "/auth/login",
   REGISTER: "/auth/signup",
-  CONFIRM_EMAIL: "/auth/confirm-email",  // ✅ تأكد إنها صح
+  CONFIRM_EMAIL: "/auth/confirm-email",
   RESEND_OTP: "/auth/resend-otp",
   FORGET_PASSWORD: "/auth/forget-password",
   RESET_PASSWORD: "/auth/reset-password",
@@ -33,7 +33,7 @@ export const registerAPI = async (userData) => {
   return response.data;
 };
 
-// 🔐 LOGIN (معدل)
+// 🔐 LOGIN
 export const loginAPI = async (credentials) => {
   console.log("🔐 Sending login request with:", credentials);
 
@@ -42,7 +42,6 @@ export const loginAPI = async (credentials) => {
   console.log("✅ Login response status:", response.status);
   console.log("📦 Login response data:", response.data);
 
-  // ✅ طريقة مرنة لجلب البيانات (تشيل كل الاحتمالات)
   const responseData = response.data?.data || response.data || {};
   
   const accessToken = responseData?.accessToken || response.data?.accessToken;
@@ -65,7 +64,6 @@ export const loginAPI = async (credentials) => {
     console.log("🔄 Refresh token saved");
   }
 
-  // ✅ حفظ userId
   if (user?._id) {
     localStorage.setItem("userId", user._id);
     console.log("👤 User ID saved:", user._id);
@@ -93,7 +91,157 @@ export const loginAPI = async (credentials) => {
   return response.data;
 };
 
-// 🚪 LOGOUT (معدل)
+// ✅ Google Login API
+export const googleLoginAPI = async (idToken) => {
+  try {
+    const response = await API.post("/auth/google-login", { idToken });
+    
+    const accessToken = response.data?.accessToken || response.data?.data?.accessToken;
+    const refreshToken = response.data?.refreshToken || response.data?.data?.refreshToken;
+    const user = response.data?.user || response.data?.data?.user;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+    }
+    if (user?.role !== undefined) {
+      localStorage.setItem("role", user.role);
+    }
+    if (user?._id) {
+      localStorage.setItem("userId", user._id);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Google login error:", error);
+    throw error;
+  }
+};
+
+// ✅ Facebook Login API
+export const facebookLoginAPI = async (accessToken) => {
+  try {
+    const response = await API.post("/auth/facebook-login", { accessToken });
+    
+    const accessTokenRes = response.data?.accessToken || response.data?.data?.accessToken;
+    const refreshTokenRes = response.data?.refreshToken || response.data?.data?.refreshToken;
+    const user = response.data?.user || response.data?.data?.user;
+
+    if (accessTokenRes) {
+      localStorage.setItem("accessToken", accessTokenRes);
+    }
+    if (refreshTokenRes) {
+      localStorage.setItem("refreshToken", refreshTokenRes);
+    }
+    if (user?.role !== undefined) {
+      localStorage.setItem("role", user.role);
+    }
+    if (user?._id) {
+      localStorage.setItem("userId", user._id);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Facebook login error:", error);
+    throw error;
+  }
+};
+
+// ✅ GitHub Login API
+export const githubLoginAPI = async (code) => {
+  try {
+    // GitHub OAuth بيستخدم `code` مش `accessToken` مباشرة
+    const response = await API.post("/auth/github-login", { code });
+    
+    const accessToken = response.data?.accessToken || response.data?.data?.accessToken;
+    const refreshToken = response.data?.refreshToken || response.data?.data?.refreshToken;
+    const user = response.data?.user || response.data?.data?.user;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+    }
+    if (user?.role !== undefined) {
+      localStorage.setItem("role", user.role);
+    }
+    if (user?._id) {
+      localStorage.setItem("userId", user._id);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("GitHub login error:", error);
+    throw error;
+  }
+};
+
+// ✅ Apple Login API
+export const appleLoginAPI = async (authorizationCode) => {
+  try {
+    const response = await API.post("/auth/apple-login", { authorizationCode });
+    
+    const accessToken = response.data?.accessToken || response.data?.data?.accessToken;
+    const refreshToken = response.data?.refreshToken || response.data?.data?.refreshToken;
+    const user = response.data?.user || response.data?.data?.user;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+    }
+    if (user?.role !== undefined) {
+      localStorage.setItem("role", user.role);
+    }
+    if (user?._id) {
+      localStorage.setItem("userId", user._id);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Apple login error:", error);
+    throw error;
+  }
+};
+
+// ✅ X (Twitter) Login API
+export const twitterLoginAPI = async (oauthToken, oauthVerifier) => {
+  try {
+    // Twitter OAuth 1.0a بيستخدم token و verifier
+    const response = await API.post("/auth/twitter-login", { 
+      oauthToken, 
+      oauthVerifier 
+    });
+    
+    const accessToken = response.data?.accessToken || response.data?.data?.accessToken;
+    const refreshToken = response.data?.refreshToken || response.data?.data?.refreshToken;
+    const user = response.data?.user || response.data?.data?.user;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+    }
+    if (user?.role !== undefined) {
+      localStorage.setItem("role", user.role);
+    }
+    if (user?._id) {
+      localStorage.setItem("userId", user._id);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("X (Twitter) login error:", error);
+    throw error;
+  }
+};
+
+// 🚪 LOGOUT
 export const logoutAPI = async () => {
   try {
     const refreshToken = localStorage.getItem("refreshToken");
@@ -103,7 +251,6 @@ export const logoutAPI = async () => {
   } catch (error) {
     console.error("Logout API error:", error);
   } finally {
-    // ✅ مسح جميع البيانات من localStorage
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
@@ -111,10 +258,10 @@ export const logoutAPI = async () => {
     localStorage.removeItem("email");
     localStorage.removeItem("tempRegistration");
     localStorage.removeItem("rememberedEmail");
-    localStorage.removeItem("userId"); // ✅ إضافة userId
-    localStorage.removeItem("redirectAfterLogin"); // ✅ إضافة redirect
-    localStorage.removeItem("pendingMessage"); // ✅ إضافة رسالة معلقة
-    localStorage.removeItem("pendingReceiverId"); // ✅ إضافة مستقبل معلق
+    localStorage.removeItem("userId");
+    localStorage.removeItem("redirectAfterLogin");
+    localStorage.removeItem("pendingMessage");
+    localStorage.removeItem("pendingReceiverId");
   }
 };
 
@@ -137,22 +284,22 @@ export const refreshTokenAPI = async () => {
 // ✅ CONFIRM EMAIL
 export const confirmEmailAPI = async ({ email, otp }) => {
   const response = await API.post(AUTH_ENDPOINTS.CONFIRM_EMAIL, { email, otp });
-  return response.data;  // ✅ ده صح
+  return response.data;
 };
 
-// 🔁 RESEND OTP (PATCH method)
+// 🔁 RESEND OTP
 export const resendOtpAPI = async ({ email }) => {
   const response = await API.patch(AUTH_ENDPOINTS.RESEND_OTP, { email });
   return response.data;
 };
 
-// 🔐 FORGET PASSWORD (PATCH method)
+// 🔐 FORGET PASSWORD
 export const forgetPasswordAPI = async ({ email }) => {
   const response = await API.patch(AUTH_ENDPOINTS.FORGET_PASSWORD, { email });
   return response.data;
 };
 
-// 🔑 RESET PASSWORD (PATCH method)
+// 🔑 RESET PASSWORD
 export const resetPasswordAPI = async ({ email, otp, newPassword }) => {
   const response = await API.patch(AUTH_ENDPOINTS.RESET_PASSWORD, { 
     email, 
@@ -163,7 +310,7 @@ export const resetPasswordAPI = async ({ email, otp, newPassword }) => {
 };
 
 // ================================
-// 🧪 HELPER FUNCTIONS (معدلة)
+// 🧪 HELPER FUNCTIONS
 // ================================
 
 export const isAuthenticated = () => {
@@ -212,7 +359,6 @@ export const getUserIdFromToken = () => {
 };
 
 export const getUserId = () => {
-  // ✅ جلب userId من localStorage مباشرة
   const userId = localStorage.getItem("userId");
   if (userId) return userId;
   return getUserIdFromToken();
@@ -238,31 +384,28 @@ export const clearAuthData = () => {
   localStorage.removeItem("email");
   localStorage.removeItem("tempRegistration");
   localStorage.removeItem("rememberedEmail");
-  localStorage.removeItem("userId"); // ✅ إضافة
-  localStorage.removeItem("redirectAfterLogin"); // ✅ إضافة
-  localStorage.removeItem("pendingMessage"); // ✅ إضافة
-  localStorage.removeItem("pendingReceiverId"); // ✅ إضافة
+  localStorage.removeItem("userId");
+  localStorage.removeItem("redirectAfterLogin");
+  localStorage.removeItem("pendingMessage");
+  localStorage.removeItem("pendingReceiverId");
 };
 
-// ✅ دالة لحفظ redirect بعد تسجيل الدخول
+// ✅ Redirect Functions
 export const setRedirectAfterLogin = (url) => {
   if (url && !url.includes("/login") && !url.includes("/register")) {
     localStorage.setItem("redirectAfterLogin", url);
   }
 };
 
-// ✅ دالة لجلب redirect بعد تسجيل الدخول
 export const getRedirectAfterLogin = () => {
   return localStorage.getItem("redirectAfterLogin");
 };
 
-// ✅ دالة لمسح redirect بعد تسجيل الدخول
 export const clearRedirectAfterLogin = () => {
   localStorage.removeItem("redirectAfterLogin");
 };
 
 export const getRedirectPath = () => {
-  // ✅ التحقق من وجود redirect أولاً
   const redirect = getRedirectAfterLogin();
   if (redirect && !redirect.includes("/login") && !redirect.includes("/register")) {
     clearRedirectAfterLogin();
@@ -273,6 +416,7 @@ export const getRedirectPath = () => {
   return role === 0 ? "/admin" : "/dashboard";
 };
 
+// ✅ Remember Email
 export const setRememberedEmail = (email) => {
   if (email) {
     localStorage.setItem("rememberedEmail", email);
@@ -285,7 +429,7 @@ export const getRememberedEmail = () => {
   return localStorage.getItem("rememberedEmail");
 };
 
-// ✅ دالة لحفظ رسالة معلقة
+// ✅ Pending Message
 export const setPendingMessage = (receiverId, content) => {
   if (receiverId && content) {
     localStorage.setItem("pendingMessage", content);
@@ -293,7 +437,6 @@ export const setPendingMessage = (receiverId, content) => {
   }
 };
 
-// ✅ دالة لجلب رسالة معلقة
 export const getPendingMessage = (receiverId) => {
   const storedMessage = localStorage.getItem("pendingMessage");
   const storedReceiverId = localStorage.getItem("pendingReceiverId");
@@ -304,7 +447,6 @@ export const getPendingMessage = (receiverId) => {
   return null;
 };
 
-// ✅ دالة لمسح رسالة معلقة
 export const clearPendingMessage = () => {
   localStorage.removeItem("pendingMessage");
   localStorage.removeItem("pendingReceiverId");
