@@ -91,10 +91,16 @@ export const loginAPI = async (credentials) => {
   return response.data;
 };
 
-// ✅ Google Login API (يقبل access_token من @react-oauth/google)
-export const googleLoginAPI = async (accessToken) => {
+// 🌐 SOCIAL LOGIN APIs
+
+// ✅ Google Login API
+export const googleLoginAPI = async (googleAccessToken) => {
   try {
-    const response = await API.post("/auth/google-login", { idToken: accessToken });
+    console.log("📤 Sending google token to backend, prefix:", googleAccessToken?.substring(0, 10));
+
+    const response = await API.post("/auth/google-login", { 
+      access_token: googleAccessToken
+    });
     
     const accessTokenRes = response.data?.accessToken || response.data?.data?.accessToken;
     const refreshTokenRes = response.data?.refreshToken || response.data?.data?.refreshToken;
@@ -106,11 +112,16 @@ export const googleLoginAPI = async (accessToken) => {
     if (refreshTokenRes) {
       localStorage.setItem("refreshToken", refreshTokenRes);
     }
-    if (user?.role !== undefined) {
-      localStorage.setItem("role", user.role);
-    }
-    if (user?._id) {
-      localStorage.setItem("userId", user._id);
+
+    if (accessTokenRes) {
+      try {
+        const payload = JSON.parse(atob(accessTokenRes.split(".")[1]));
+        if (payload.role !== undefined) localStorage.setItem("role", payload.role);
+        if (payload.id || payload.userId) localStorage.setItem("userId", payload.id || payload.userId);
+      } catch {
+        if (user?.role !== undefined) localStorage.setItem("role", user.role);
+        if (user?._id) localStorage.setItem("userId", user._id);
+      }
     }
 
     return response.data;
@@ -279,25 +290,23 @@ export const refreshTokenAPI = async () => {
   return response.data;
 };
 
-// ✅ CONFIRM EMAIL
+// ✉️ EMAIL APIs
+
 export const confirmEmailAPI = async ({ email, otp }) => {
   const response = await API.post(AUTH_ENDPOINTS.CONFIRM_EMAIL, { email, otp });
   return response.data;
 };
 
-// 🔁 RESEND OTP
 export const resendOtpAPI = async ({ email }) => {
   const response = await API.patch(AUTH_ENDPOINTS.RESEND_OTP, { email });
   return response.data;
 };
 
-// 🔐 FORGET PASSWORD
 export const forgetPasswordAPI = async ({ email }) => {
   const response = await API.patch(AUTH_ENDPOINTS.FORGET_PASSWORD, { email });
   return response.data;
 };
 
-// 🔑 RESET PASSWORD
 export const resetPasswordAPI = async ({ email, otp, newPassword }) => {
   const response = await API.patch(AUTH_ENDPOINTS.RESET_PASSWORD, { 
     email, 
@@ -307,9 +316,7 @@ export const resetPasswordAPI = async ({ email, otp, newPassword }) => {
   return response.data;
 };
 
-// ================================
 // 🧪 HELPER FUNCTIONS
-// ================================
 
 export const isAuthenticated = () => {
   const token = localStorage.getItem("accessToken");
@@ -388,7 +395,8 @@ export const clearAuthData = () => {
   localStorage.removeItem("pendingReceiverId");
 };
 
-// ✅ Redirect Functions
+// 🔗 REDIRECT FUNCTIONS
+
 export const setRedirectAfterLogin = (url) => {
   if (url && !url.includes("/login") && !url.includes("/register")) {
     localStorage.setItem("redirectAfterLogin", url);
@@ -414,7 +422,8 @@ export const getRedirectPath = () => {
   return role === 0 ? "/admin" : "/dashboard";
 };
 
-// ✅ Remember Email
+// 📧 REMEMBER EMAIL
+
 export const setRememberedEmail = (email) => {
   if (email) {
     localStorage.setItem("rememberedEmail", email);
@@ -427,7 +436,8 @@ export const getRememberedEmail = () => {
   return localStorage.getItem("rememberedEmail");
 };
 
-// ✅ Pending Message
+// 💬 PENDING MESSAGE
+
 export const setPendingMessage = (receiverId, content) => {
   if (receiverId && content) {
     localStorage.setItem("pendingMessage", content);

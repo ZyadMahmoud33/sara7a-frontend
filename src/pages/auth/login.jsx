@@ -182,67 +182,79 @@ export default function Login() {
     }
   };
 
-  // ✅ Google Login Handler using @react-oauth/google
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+  // Google Login Handler
+const handleGoogleLogin = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
+    try {
+      setSocialLoading("google");
+      console.log("✅ Google token response:", tokenResponse);
+
+      const res = await googleLoginAPI(tokenResponse.access_token);
+      
+      const accessToken = res?.data?.accessToken || res?.accessToken;
+      const refreshToken = res?.data?.refreshToken || res?.refreshToken;
+      const user = res?.data?.user || res?.user;
+
+      if (!accessToken) throw new Error("No access token received from server");
+
+      localStorage.setItem("accessToken", accessToken);
+      if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+      
       try {
-        setSocialLoading("google");
-        // ✅ استخدام access_token من Google
-        const res = await googleLoginAPI(tokenResponse.access_token);
-        
-        const accessToken = res?.data?.accessToken || res?.accessToken;
-        const refreshToken = res?.data?.refreshToken || res?.refreshToken;
-        const user = res?.data?.user || res?.user;
-
-        if (!accessToken) throw new Error("No access token received");
-
-        localStorage.setItem("accessToken", accessToken);
-        if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+        const decoded = jwtDecode(accessToken);
+        if (decoded.role !== undefined) localStorage.setItem("role", decoded.role);
+        if (decoded.id || decoded.userId) localStorage.setItem("userId", decoded.id || decoded.userId);
+      } catch {
         if (user?.role !== undefined) localStorage.setItem("role", user.role);
         if (user?._id) localStorage.setItem("userId", user._id);
-
-        toast.success("Logged in with Google! 🎉");
-        
-        const savedRedirect = localStorage.getItem("redirectAfterLogin");
-        if (savedRedirect) {
-          localStorage.removeItem("redirectAfterLogin");
-          navigate(savedRedirect);
-        } else {
-          navigate(user?.role === 0 ? "/admin" : "/dashboard");
-        }
-      } catch (error) {
-        console.error("Google login error:", error);
-        toast.error("Google login failed");
-      } finally {
-        setSocialLoading(null);
       }
-    },
-    onError: () => {
-      toast.error("Google login failed");
-      setSocialLoading(null);
-    },
-    flow: "auth-code",
-  });
 
-  // ✅ Facebook Login Handler (redirect flow)
+      toast.success("Logged in with Google! 🎉");
+      
+      window.dispatchEvent(new Event("authChange"));
+
+      const savedRedirect = localStorage.getItem("redirectAfterLogin");
+      if (savedRedirect && !savedRedirect.includes("/login") && !savedRedirect.includes("/register")) {
+        localStorage.removeItem("redirectAfterLogin");
+        navigate(savedRedirect);
+      } else {
+        const role = localStorage.getItem("role");
+        navigate(parseInt(role) === 0 ? "/admin" : "/dashboard");
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      const message = error?.response?.data?.message || "Google login failed. Please try again.";
+      toast.error(message);
+    } finally {
+      setSocialLoading(null);
+    }
+  },
+  onError: (error) => {
+    console.error("Google OAuth error:", error);
+    toast.error("Google login failed");
+    setSocialLoading(null);
+  },
+  flow: "implicit",
+});
+  // Facebook Login Handler
   const handleFacebookLogin = () => {
     setSocialLoading("facebook");
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/facebook`;
   };
 
-  // ✅ GitHub Login Handler (redirect flow)
+  // GitHub Login Handler
   const handleGitHubLogin = () => {
     setSocialLoading("github");
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
   };
 
-  // ✅ Apple Login Handler (redirect flow)
+  // Apple Login Handler
   const handleAppleLogin = () => {
     setSocialLoading("apple");
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/apple`;
   };
 
-  // ✅ X (Twitter) Login Handler (redirect flow)
+  // X (Twitter) Login Handler
   const handleTwitterLogin = () => {
     setSocialLoading("twitter");
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/twitter`;
