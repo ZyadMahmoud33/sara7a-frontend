@@ -66,49 +66,57 @@ export default function ProfileSettings() {
   }, []);
 
   const fetchUserData = async () => {
-  try {
-    setLoading(true);
-    const userData = await getProfileAPI();
-    setUser(userData);
-    
-    console.log("📥 User data from API:", userData);
-    
-    let genderString = "";
-    if (userData?.gender === 0) genderString = "male";
-    else if (userData?.gender === 1) genderString = "female";
-    else if (userData?.gender === 2) genderString = "other";
-    
-    setFormData({
-      firstName: userData?.firstName || "",
-      lastName: userData?.lastName || "",
-      email: userData?.email || "",
-      phone: userData?.phone || "",
-      bio: userData?.bio || "",
-      country: userData?.country || "",
-      city: userData?.city || "",        // ✅ تأكد إن الحقل ده موجود
-      address: userData?.address || "",
-      website: userData?.website || "",
-      birthDate: userData?.DOB ? new Date(userData.DOB).toISOString().split("T")[0] : "",
-      gender: genderString,
-    });
-    
-    // ✅ باقي الكود زي ما هو...
-    const picUrl = userData?.profilePic;
-    if (picUrl) {
-      const finalUrl = picUrl.includes('?') ? `${picUrl}&t=${Date.now()}` : `${picUrl}?t=${Date.now()}`;
-      setProfilePicPreview(finalUrl);
-    } else {
-      setProfilePicPreview(null);
+    try {
+      setLoading(true);
+      const userData = await getProfileAPI();
+      setUser(userData);
+      
+      console.log("📥 User data from API:", userData);
+      
+      let genderString = "";
+      if (userData?.gender === 0) genderString = "male";
+      else if (userData?.gender === 1) genderString = "female";
+      else if (userData?.gender === 2) genderString = "other";
+      
+      setFormData({
+        firstName: userData?.firstName || "",
+        lastName: userData?.lastName || "",
+        email: userData?.email || "",
+        phone: userData?.phone || "",
+        bio: userData?.bio || "",
+        country: userData?.country || "",
+        city: userData?.city || "",
+        address: userData?.address || "",
+        website: userData?.website || "",
+        birthDate: userData?.DOB ? new Date(userData.DOB).toISOString().split("T")[0] : "",
+        gender: genderString,
+      });
+      
+      // ✅ معالجة رابط الصورة
+      const picUrl = userData?.profilePic;
+      console.log("🔍 Raw profilePic from API:", picUrl);
+      
+      if (picUrl) {
+        let finalUrl = picUrl;
+        if (!picUrl.startsWith('http')) {
+          const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+          finalUrl = picUrl.startsWith('/') ? `${baseUrl}${picUrl}` : `${baseUrl}/${picUrl}`;
+        }
+        finalUrl = finalUrl.includes('?') ? `${finalUrl}&t=${Date.now()}` : `${finalUrl}?t=${Date.now()}`;
+        console.log("🔍 Final profilePic URL:", finalUrl);
+        setProfilePicPreview(finalUrl);
+      } else {
+        setProfilePicPreview(null);
+      }
+      setImgError(false);
+      
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      toast.error("Failed to load profile data");
+    } finally {
+      setLoading(false);
     }
-    setImgError(false);
-    
-  } catch (error) {
-    console.error("Failed to fetch user data:", error);
-    toast.error("Failed to load profile data");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -142,12 +150,13 @@ export default function ProfileSettings() {
     setUploadingPic(true);
     try {
       const result = await uploadProfilePicAPI(file);
+      console.log("📤 Upload result:", result);
+      
       if (result.success !== false) {
         toast.success("Profile picture updated!");
         await fetchUserData(); // refetch to get the permanent URL
       } else {
         toast.error(result.message || "Failed to update profile picture");
-        // revert preview if needed
         await fetchUserData();
       }
     } catch (error) {
@@ -156,65 +165,61 @@ export default function ProfileSettings() {
       await fetchUserData();
     } finally {
       setUploadingPic(false);
-      // revoke blob URL after upload to avoid memory leaks
       URL.revokeObjectURL(previewUrl);
     }
   };
 
-const updateProfile = async () => {
-  setLoading(true);
-  try {
-    const dataToSend = {};
-    
-    // ✅ بس الحقول اللي فيها قيمة وغير متساوية
-    if (formData.firstName && formData.firstName !== user?.firstName) dataToSend.firstName = formData.firstName;
-    if (formData.lastName && formData.lastName !== user?.lastName) dataToSend.lastName = formData.lastName;
-    if (formData.phone && formData.phone !== user?.phone) dataToSend.phone = formData.phone;
-    if (formData.bio && formData.bio !== user?.bio) dataToSend.bio = formData.bio;
-    if (formData.country && formData.country !== user?.country) dataToSend.country = formData.country;
-    if (formData.city && formData.city !== user?.city) dataToSend.city = formData.city;      // ✅ متبعتش لو فاضية
-    if (formData.address && formData.address !== user?.address) dataToSend.address = formData.address;
-    if (formData.website && formData.website !== user?.website) dataToSend.website = formData.website;
-    
-    // ✅ معالجة الـ DOB
-    const userDOB = user?.DOB ? user.DOB.split("T")[0] : "";
-    if (formData.birthDate && formData.birthDate !== userDOB) {
-      dataToSend.DOB = formData.birthDate;
-    }
-    
-    // ✅ معالجة الـ gender
-    let genderValue = null;
-    if (formData.gender === "male") genderValue = 0;
-    else if (formData.gender === "female") genderValue = 1;
-    else if (formData.gender === "other") genderValue = 2;
-    
-    if (genderValue !== null && genderValue !== user?.gender) {
-      dataToSend.gender = genderValue;
-    }
-    
-    console.log("📤 Frontend - Sending:", dataToSend);
-    
-    if (Object.keys(dataToSend).length === 0) {
-      toast("No changes to save");
+  const updateProfile = async () => {
+    setLoading(true);
+    try {
+      const dataToSend = {};
+      
+      if (formData.firstName && formData.firstName !== user?.firstName) dataToSend.firstName = formData.firstName;
+      if (formData.lastName && formData.lastName !== user?.lastName) dataToSend.lastName = formData.lastName;
+      if (formData.phone && formData.phone !== user?.phone) dataToSend.phone = formData.phone;
+      if (formData.bio && formData.bio !== user?.bio) dataToSend.bio = formData.bio;
+      if (formData.country && formData.country !== user?.country) dataToSend.country = formData.country;
+      if (formData.city && formData.city !== user?.city) dataToSend.city = formData.city;
+      if (formData.address && formData.address !== user?.address) dataToSend.address = formData.address;
+      if (formData.website && formData.website !== user?.website) dataToSend.website = formData.website;
+      
+      const userDOB = user?.DOB ? user.DOB.split("T")[0] : "";
+      if (formData.birthDate && formData.birthDate !== userDOB) {
+        dataToSend.DOB = formData.birthDate;
+      }
+      
+      let genderValue = null;
+      if (formData.gender === "male") genderValue = 0;
+      else if (formData.gender === "female") genderValue = 1;
+      else if (formData.gender === "other") genderValue = 2;
+      
+      if (genderValue !== null && genderValue !== user?.gender) {
+        dataToSend.gender = genderValue;
+      }
+      
+      console.log("📤 Frontend - Sending:", dataToSend);
+      
+      if (Object.keys(dataToSend).length === 0) {
+        toast("No changes to save");
+        setLoading(false);
+        return;
+      }
+      
+      const result = await updateProfileAPI(dataToSend);
+      
+      if (result.success !== false) {
+        toast.success("Profile updated successfully! 🎉");
+        await fetchUserData();
+      } else {
+        toast.error(result.message || "Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error(error.message || "Failed to update profile");
+    } finally {
       setLoading(false);
-      return;
     }
-    
-    const result = await updateProfileAPI(dataToSend);
-    
-    if (result.success !== false) {
-      toast.success("Profile updated successfully! 🎉");
-      await fetchUserData();
-    } else {
-      toast.error(result.message || "Failed to update profile");
-    }
-  } catch (error) {
-    console.error("Update error:", error);
-    toast.error(error.message || "Failed to update profile");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const updatePassword = async () => {
     if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
