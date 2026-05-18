@@ -91,20 +91,20 @@ export const loginAPI = async (credentials) => {
   return response.data;
 };
 
-// ✅ Google Login API
-export const googleLoginAPI = async (idToken) => {
+// ✅ Google Login API (يقبل access_token من @react-oauth/google)
+export const googleLoginAPI = async (accessToken) => {
   try {
-    const response = await API.post("/auth/google-login", { idToken });
+    const response = await API.post("/auth/google-login", { idToken: accessToken });
     
-    const accessToken = response.data?.accessToken || response.data?.data?.accessToken;
-    const refreshToken = response.data?.refreshToken || response.data?.data?.refreshToken;
+    const accessTokenRes = response.data?.accessToken || response.data?.data?.accessToken;
+    const refreshTokenRes = response.data?.refreshToken || response.data?.data?.refreshToken;
     const user = response.data?.user || response.data?.data?.user;
 
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
+    if (accessTokenRes) {
+      localStorage.setItem("accessToken", accessTokenRes);
     }
-    if (refreshToken) {
-      localStorage.setItem("refreshToken", refreshToken);
+    if (refreshTokenRes) {
+      localStorage.setItem("refreshToken", refreshTokenRes);
     }
     if (user?.role !== undefined) {
       localStorage.setItem("role", user.role);

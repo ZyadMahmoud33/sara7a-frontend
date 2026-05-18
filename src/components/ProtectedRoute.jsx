@@ -2,6 +2,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 // ================================
 // 🛠 TOKEN VALIDATION
@@ -30,6 +31,8 @@ const clearAuth = () => {
   localStorage.removeItem("email");
   localStorage.removeItem("tempRegistration");
   localStorage.removeItem("rememberedEmail");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("redirectAfterLogin");
 };
 
 // ================================
@@ -173,9 +176,9 @@ export default function ProtectedRoute({
   if (requiredPlan && checking) {
     console.log("⏳ Checking plan requirement, showing loader");
     return (
-      <div className="flex flex-col justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen">
-        <div className="border-4 border-purple-500 border-t-transparent rounded-full w-12 h-12 animate-spin" />
-        <p className="mt-4 text-gray-400">Verifying access...</p>
+      <div className={cn('flex', 'flex-col', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'min-h-screen')}>
+        <div className={cn('border-4', 'border-purple-500', 'border-t-transparent', 'rounded-full', 'w-12', 'h-12', 'animate-spin')} />
+        <p className={cn('mt-4', 'text-gray-400')}>Verifying access...</p>
       </div>
     );
   }

@@ -3,9 +3,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { loginAPI } from "../../api/auth";
+import { loginAPI, googleLoginAPI, facebookLoginAPI, githubLoginAPI, appleLoginAPI, twitterLoginAPI } from "../../api/auth";
 import { jwtDecode } from "jwt-decode";
 import { cn } from "@/lib/utils";
+import { useGoogleLogin } from "@react-oauth/google";
 import {
   Mail,
   Lock,
@@ -181,33 +182,92 @@ export default function Login() {
     }
   };
 
-  // ✅ Social Login Handlers
+  // ✅ Google Login Handler using @react-oauth/google
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setSocialLoading("google");
+        // ✅ استخدام access_token من Google
+        const res = await googleLoginAPI(tokenResponse.access_token);
+        
+        const accessToken = res?.data?.accessToken || res?.accessToken;
+        const refreshToken = res?.data?.refreshToken || res?.refreshToken;
+        const user = res?.data?.user || res?.user;
+
+        if (!accessToken) throw new Error("No access token received");
+
+        localStorage.setItem("accessToken", accessToken);
+        if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+        if (user?.role !== undefined) localStorage.setItem("role", user.role);
+        if (user?._id) localStorage.setItem("userId", user._id);
+
+        toast.success("Logged in with Google! 🎉");
+        
+        const savedRedirect = localStorage.getItem("redirectAfterLogin");
+        if (savedRedirect) {
+          localStorage.removeItem("redirectAfterLogin");
+          navigate(savedRedirect);
+        } else {
+          navigate(user?.role === 0 ? "/admin" : "/dashboard");
+        }
+      } catch (error) {
+        console.error("Google login error:", error);
+        toast.error("Google login failed");
+      } finally {
+        setSocialLoading(null);
+      }
+    },
+    onError: () => {
+      toast.error("Google login failed");
+      setSocialLoading(null);
+    },
+    flow: "auth-code",
+  });
+
+  // ✅ Facebook Login Handler (redirect flow)
+  const handleFacebookLogin = () => {
+    setSocialLoading("facebook");
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/facebook`;
+  };
+
+  // ✅ GitHub Login Handler (redirect flow)
+  const handleGitHubLogin = () => {
+    setSocialLoading("github");
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
+  };
+
+  // ✅ Apple Login Handler (redirect flow)
+  const handleAppleLogin = () => {
+    setSocialLoading("apple");
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/apple`;
+  };
+
+  // ✅ X (Twitter) Login Handler (redirect flow)
+  const handleTwitterLogin = () => {
+    setSocialLoading("twitter");
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/twitter`;
+  };
+
   const handleSocialLogin = (provider) => {
-    setSocialLoading(provider);
-    
-    let authUrl = "";
     switch (provider) {
       case "google":
-        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+        handleGoogleLogin();
         break;
       case "facebook":
-        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/facebook`;
+        handleFacebookLogin();
         break;
       case "github":
-        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/github`;
+        handleGitHubLogin();
         break;
       case "apple":
-        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/apple`;
+        handleAppleLogin();
         break;
       case "twitter":
-        authUrl = `${import.meta.env.VITE_API_URL}/api/auth/twitter`;
+        handleTwitterLogin();
         break;
       default:
-        setSocialLoading(null);
-        return;
+        break;
     }
-    
-    window.location.href = authUrl;
   };
 
   const handleKeyDown = (e) => {
@@ -223,7 +283,7 @@ export default function Login() {
     }
   }, []);
 
-  // Social buttons configuration (مصغرة عشان البوكس يبقى قصير)
+  // Social buttons configuration
   const socialButtons = [
     { 
       provider: "google", 
@@ -569,7 +629,7 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Social Login Buttons - مصغرة ومرتبة جنب بعض */}
+              {/* Social Login Buttons */}
               <div className={cn('grid', 'grid-cols-5', 'gap-2', 'mb-6')}>
                 {socialButtons.map((btn) => (
                   <motion.button

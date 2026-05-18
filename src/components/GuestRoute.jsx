@@ -2,6 +2,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 // ================================
 // 🛠 HELPERS
@@ -27,6 +28,8 @@ const clearAuth = () => {
   localStorage.removeItem("email");
   localStorage.removeItem("tempRegistration");
   localStorage.removeItem("rememberedEmail");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("redirectAfterLogin");
 };
 
 const decodeRoleFromToken = (token) => {
@@ -109,9 +112,9 @@ export default function GuestRoute({ children, redirectTo = null }) {
   // Show loading while checking auth status
   if (checking) {
     return (
-      <div className="flex flex-col justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen">
-        <div className="border-4 border-purple-500 border-t-transparent rounded-full w-10 h-10 animate-spin" />
-        <p className="mt-4 text-gray-400 text-sm">Checking authentication...</p>
+      <div className={cn('flex', 'flex-col', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'min-h-screen')}>
+        <div className={cn('border-4', 'border-purple-500', 'border-t-transparent', 'rounded-full', 'w-10', 'h-10', 'animate-spin')} />
+        <p className={cn('mt-4', 'text-gray-400', 'text-sm')}>Checking authentication...</p>
       </div>
     );
   }

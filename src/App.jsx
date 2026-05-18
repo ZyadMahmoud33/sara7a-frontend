@@ -9,9 +9,10 @@ import {
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Toaster } from "react-hot-toast";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // Pages - Auth
-import Login from "./pages/auth/Login";
+import Login from "./pages/auth/login";
 import Register from "./pages/auth/Register";
 import ConfirmEmail from "./pages/auth/ConfirmEmail";
 import ForgetPassword from "./pages/auth/ForgetPassword";
@@ -133,169 +134,176 @@ export default function App() {
     };
   }, []);
 
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   return (
-    <BrowserRouter>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        gutter={8}
-        containerClassName=""
-        containerStyle={{}}
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: "#1f2937",
-            color: "#fff",
-            borderRadius: "12px",
-            padding: "12px 16px",
-          },
-          success: {
-            duration: 3000,
-            iconTheme: {
-              primary: "#10b981",
-              secondary: "#fff",
-            },
-          },
-          error: {
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <BrowserRouter>
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
             duration: 4000,
-            iconTheme: {
-              primary: "#ef4444",
-              secondary: "#fff",
+            style: {
+              background: "#1f2937",
+              color: "#fff",
+              borderRadius: "12px",
+              padding: "12px 16px",
             },
-          },
-        }}
-      />
-
-      <Routes>
-        {/* 🏠 ROOT - Redirect based on auth status */}
-        <Route
-          path="/"
-          element={<Navigate to={getRedirectPath(token)} replace />}
+            success: {
+              duration: 3000,
+              iconTheme: {
+                primary: "#10b981",
+                secondary: "#fff",
+              },
+            },
+            error: {
+              duration: 4000,
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "#fff",
+              },
+            },
+          }}
         />
 
-        {/* 🔓 PUBLIC AUTH ROUTES (Guest only) */}
-        <Route
-          path="/login"
-          element={
-            <GuestRoute>
-              <Login />
-            </GuestRoute>
-          }
-        />
+        <Routes>
+          {/* 🏠 ROOT - Redirect based on auth status */}
+          <Route
+            path="/"
+            element={<Navigate to={getRedirectPath(token)} replace />}
+          />
 
-        <Route
-          path="/register"
-          element={
-            <GuestRoute>
-              <Register />
-            </GuestRoute>
-          }
-        />
+          {/* 🔓 PUBLIC AUTH ROUTES (Guest only) */}
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            }
+          />
 
-        <Route
-          path="/confirm-email"
-          element={
-            <GuestRoute>
-              <ConfirmEmail />
-            </GuestRoute>
-          }
-        />
+          <Route
+            path="/register"
+            element={
+              <GuestRoute>
+                <Register />
+              </GuestRoute>
+            }
+          />
 
-        <Route
-          path="/forget-password"
-          element={
-            <GuestRoute>
-              <ForgetPassword />
-            </GuestRoute>
-          }
-        />
+          <Route
+            path="/confirm-email"
+            element={
+              <GuestRoute>
+                <ConfirmEmail />
+              </GuestRoute>
+            }
+          />
 
-        <Route
-          path="/reset-password"
-          element={
-            <GuestRoute>
-              <ResetPassword />
-            </GuestRoute>
-          }
-        />
+          <Route
+            path="/forget-password"
+            element={
+              <GuestRoute>
+                <ForgetPassword />
+              </GuestRoute>
+            }
+          />
 
-        {/* ✅ SOCIAL LOGIN SUCCESS CALLBACK */}
-        <Route path="/auth-success" element={<AuthSuccess />} />
+          <Route
+            path="/reset-password"
+            element={
+              <GuestRoute>
+                <ResetPassword />
+              </GuestRoute>
+            }
+          />
 
-        {/* 👤 PUBLIC PROFILE (Anyone can view) */}
-        <Route path="/profile/:userId" element={<PublicProfileWrapper />} />
-        <Route path="/profile/:username" element={<PublicProfileWrapper />} />
-        <Route path="/u/:username" element={<PublicProfileWrapper />} />
+          {/* ✅ SOCIAL LOGIN SUCCESS CALLBACK */}
+          <Route path="/auth-success" element={<AuthSuccess />} />
 
-        {/* 🔒 USER ROUTES (Authenticated only) */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* 👤 PUBLIC PROFILE (Anyone can view) */}
+          <Route path="/profile/:userId" element={<PublicProfileWrapper />} />
+          <Route path="/profile/:username" element={<PublicProfileWrapper />} />
+          <Route path="/u/:username" element={<PublicProfileWrapper />} />
 
-        <Route
-          path="/messages"
-          element={
-            <ProtectedRoute>
-              <Messages />
-            </ProtectedRoute>
-          }
-        />
+          {/* 🔒 USER ROUTES (Authenticated only) */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/premium"
-          element={
-            <ProtectedRoute>
-              <Premium />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <Messages />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/payment-success"
-          element={
-            <ProtectedRoute>
-              <PaymentSuccess />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/premium"
+            element={
+              <ProtectedRoute>
+                <Premium />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ✅ PROFILE SETTINGS */}
-        <Route
-          path="/profile-settings"
-          element={
-            <ProtectedRoute>
-              <ProfileSettings />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/payment-success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* 👑 ADMIN ROUTES (Admin only) */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* ✅ PROFILE SETTINGS */}
+          <Route
+            path="/profile-settings"
+            element={
+              <ProtectedRoute>
+                <ProfileSettings />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/admin/logs"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              <AdminLogs />
-            </ProtectedRoute>
-          }
-        />
+          {/* 👑 ADMIN ROUTES (Admin only) */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ❌ 404 - Catch all */}
-        <Route path="*" element={<Navigate to={getRedirectPath(token)} replace />} />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/admin/logs"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminLogs />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ❌ 404 - Catch all */}
+          <Route
+            path="*"
+            element={<Navigate to={getRedirectPath(token)} replace />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
