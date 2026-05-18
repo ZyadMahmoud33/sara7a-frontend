@@ -451,26 +451,21 @@ export default function Premium() {
       </div>
 
       {/* Floating Particles */}
-      <div className={cn('z-0', 'fixed', 'inset-0', 'pointer-events-none')}>
-        {[...Array(60)].map((_, i) => (
-          <motion.div
+      {/* ✨ CSS Stars Background - 500 نجمة بتملى الشاشة */}
+      <div className="stars">
+        {[...Array(500)].map((_, i) => (
+          <div
             key={i}
-            className={cn('absolute', 'bg-white/10', 'rounded-full')}
+            className="star"
             style={{
-              width: Math.random() * 3 + 1 + "px",
-              height: Math.random() * 3 + 1 + "px",
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -50, 0, 50, 0],
-              x: [0, 30, 0, -30, 0],
-              opacity: [0.2, 0.6, 0.2]
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              ease: "easeInOut"
+              width: `${Math.random() * 3 + 1}px`,
+              height: `${Math.random() * 3 + 1}px`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 3 + 1}s`,
+              backgroundColor: ['#ffffff', '#a855f7', '#ec4899', '#06b6d4', '#f59e0b'][Math.floor(Math.random() * 5)],
+              boxShadow: `0 0 ${Math.random() * 5 + 2}px ${['#a855f7', '#ec4899', '#06b6d4', '#f59e0b'][Math.floor(Math.random() * 4)]}`
             }}
           />
         ))}
