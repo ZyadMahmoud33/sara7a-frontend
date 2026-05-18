@@ -25,8 +25,39 @@ import {
   Facebook,
   Github,
   Apple,
-  Twitter
+  Twitter,
+  Star,
+  Zap,
+  Fingerprint,
+  Globe
 } from "lucide-react";
+
+// ✅ تحميل Facebook SDK تلقائياً
+const loadFacebookSDK = () => {
+  return new Promise((resolve) => {
+    if (window.FB) {
+      resolve(window.FB);
+      return;
+    }
+    
+    window.fbAsyncInit = function() {
+      window.FB.init({
+        appId: '1528951325606522',
+        cookie: true,
+        xfbml: true,
+        version: 'v18.0'
+      });
+      resolve(window.FB);
+    };
+    
+    const script = document.createElement('script');
+    script.src = 'https://connect.facebook.net/en_US/sdk.js';
+    script.async = true;
+    script.defer = true;
+    script.crossOrigin = 'anonymous';
+    document.body.appendChild(script);
+  });
+};
 
 export default function Login() {
   const navigate = useNavigate();
@@ -43,7 +74,25 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
-  const [hoveredSocial, setHoveredSocial] = useState(null);
+  const [fbSDKLoaded, setFbSDKLoaded] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // تحميل Facebook SDK عند تحميل الـ component
+  useEffect(() => {
+    loadFacebookSDK().then(() => setFbSDKLoaded(true));
+  }, []);
+
+  // 3D effect للماوس
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   // Auto login check
   useEffect(() => {
@@ -183,63 +232,94 @@ export default function Login() {
   };
 
   // Google Login Handler
-const handleGoogleLogin = useGoogleLogin({
-  onSuccess: async (tokenResponse) => {
-    try {
-      setSocialLoading("google");
-      console.log("✅ Google token response:", tokenResponse);
-
-      const res = await googleLoginAPI(tokenResponse.access_token);
-      
-      const accessToken = res?.data?.accessToken || res?.accessToken;
-      const refreshToken = res?.data?.refreshToken || res?.refreshToken;
-      const user = res?.data?.user || res?.user;
-
-      if (!accessToken) throw new Error("No access token received from server");
-
-      localStorage.setItem("accessToken", accessToken);
-      if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
-      
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
       try {
-        const decoded = jwtDecode(accessToken);
-        if (decoded.role !== undefined) localStorage.setItem("role", decoded.role);
-        if (decoded.id || decoded.userId) localStorage.setItem("userId", decoded.id || decoded.userId);
-      } catch {
-        if (user?.role !== undefined) localStorage.setItem("role", user.role);
-        if (user?._id) localStorage.setItem("userId", user._id);
-      }
+        setSocialLoading("google");
 
-      toast.success("Logged in with Google! 🎉");
-      
-      window.dispatchEvent(new Event("authChange"));
+        const res = await googleLoginAPI(tokenResponse.access_token);
+        
+        const accessToken = res?.data?.accessToken || res?.accessToken;
+        const refreshToken = res?.data?.refreshToken || res?.refreshToken;
+        const user = res?.data?.user || res?.user;
 
-      const savedRedirect = localStorage.getItem("redirectAfterLogin");
-      if (savedRedirect && !savedRedirect.includes("/login") && !savedRedirect.includes("/register")) {
-        localStorage.removeItem("redirectAfterLogin");
-        navigate(savedRedirect);
-      } else {
-        const role = localStorage.getItem("role");
-        navigate(parseInt(role) === 0 ? "/admin" : "/dashboard");
+        if (!accessToken) throw new Error("No access token received from server");
+
+        localStorage.setItem("accessToken", accessToken);
+        if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+        
+        try {
+          const decoded = jwtDecode(accessToken);
+          if (decoded.role !== undefined) localStorage.setItem("role", decoded.role);
+          if (decoded.id || decoded.userId) localStorage.setItem("userId", decoded.id || decoded.userId);
+        } catch {
+          if (user?.role !== undefined) localStorage.setItem("role", user.role);
+          if (user?._id) localStorage.setItem("userId", user._id);
+        }
+
+        toast.success("Logged in with Google! 🎉");
+        
+        window.dispatchEvent(new Event("authChange"));
+
+        const savedRedirect = localStorage.getItem("redirectAfterLogin");
+        if (savedRedirect && !savedRedirect.includes("/login") && !savedRedirect.includes("/register")) {
+          localStorage.removeItem("redirectAfterLogin");
+          navigate(savedRedirect);
+        } else {
+          const role = localStorage.getItem("role");
+          navigate(parseInt(role) === 0 ? "/admin" : "/dashboard");
+        }
+      } catch (error) {
+        console.error("Google login error:", error);
+        const message = error?.response?.data?.message || "Google login failed. Please try again.";
+        toast.error(message);
+      } finally {
+        setSocialLoading(null);
       }
-    } catch (error) {
-      console.error("Google login error:", error);
-      const message = error?.response?.data?.message || "Google login failed. Please try again.";
-      toast.error(message);
-    } finally {
+    },
+    onError: (error) => {
+      console.error("Google OAuth error:", error);
+      toast.error("Google login failed");
       setSocialLoading(null);
+    },
+    flow: "implicit",
+  });
+
+  // ✅ Facebook Login Handler (Token Flow - زي Google بالظبط)
+  const handleFacebookLogin = async () => {
+    if (!fbSDKLoaded) {
+      toast.error("Facebook SDK is loading, please try again");
+      return;
     }
-  },
-  onError: (error) => {
-    console.error("Google OAuth error:", error);
-    toast.error("Google login failed");
-    setSocialLoading(null);
-  },
-  flow: "implicit",
-});
-  // Facebook Login Handler
-  const handleFacebookLogin = () => {
+    
     setSocialLoading("facebook");
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/facebook`;
+    
+    window.FB.login(async (response) => {
+      if (response.authResponse) {
+        try {
+          const res = await facebookLoginAPI(response.authResponse.accessToken);
+          
+          toast.success("Logged in with Facebook! 🎉");
+          
+          window.dispatchEvent(new Event("authChange"));
+          
+          const savedRedirect = localStorage.getItem("redirectAfterLogin");
+          if (savedRedirect && !savedRedirect.includes("/login") && !savedRedirect.includes("/register")) {
+            localStorage.removeItem("redirectAfterLogin");
+            navigate(savedRedirect);
+          } else {
+            const role = localStorage.getItem("role");
+            navigate(role === "0" ? "/admin" : "/dashboard");
+          }
+        } catch (error) {
+          console.error("Facebook login error:", error);
+          toast.error(error?.response?.data?.message || "Facebook login failed");
+        }
+      } else {
+        toast.error("Facebook login cancelled");
+      }
+      setSocialLoading(null);
+    }, { scope: "email,public_profile" });
   };
 
   // GitHub Login Handler
@@ -355,16 +435,28 @@ const handleGoogleLogin = useGoogleLogin({
   ];
 
   return (
-    <div className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'px-4', 'min-h-screen', 'overflow-hidden')}>
-      
-      {/* Animated Background Elements */}
-      <div className={cn('fixed', 'inset-0', 'overflow-hidden', 'pointer-events-none')}>
-        <div className={cn('-top-40', '-right-40', 'absolute', 'bg-purple-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'mix-blend-multiply', 'filter')}></div>
-        <div className={cn('-bottom-40', '-left-40', 'absolute', 'bg-blue-600', 'opacity-20', 'blur-3xl', 'rounded-full', 'w-80', 'h-80', 'animate-pulse', 'delay-1000', 'mix-blend-multiply', 'filter')}></div>
-        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-pink-600', 'opacity-10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000', 'transform', 'mix-blend-multiply', 'filter')}></div>
-        
-        {/* Floating particles */}
-        {[...Array(20)].map((_, i) => (
+    <div 
+      className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-br', 'from-gray-900', 'via-black', 'to-gray-900', 'px-4', 'min-h-screen', 'overflow-hidden')}
+      style={{
+        perspective: '1000px'
+      }}
+    >
+      {/* 3D Animated Background */}
+      <div 
+        className={cn('fixed', 'inset-0', 'opacity-30', 'pointer-events-none')}
+        style={{
+          transform: `rotateX(${mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg)`,
+          transition: 'transform 0.1s ease-out'
+        }}
+      >
+        <div className={cn('top-20', 'left-10', 'absolute', 'bg-purple-600', 'blur-[100px]', 'rounded-full', 'w-72', 'h-72', 'animate-pulse')} />
+        <div className={cn('right-10', 'bottom-20', 'absolute', 'bg-blue-600', 'blur-[120px]', 'rounded-full', 'w-96', 'h-96', 'animate-pulse', 'delay-1000')} />
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-pink-600', 'blur-[150px]', 'rounded-full', 'w-[500px]', 'h-[500px]', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse', 'delay-2000')} />
+      </div>
+
+      {/* Animated Particles Grid */}
+      <div className={cn('fixed', 'inset-0', 'pointer-events-none')}>
+        {[...Array(50)].map((_, i) => (
           <motion.div
             key={i}
             className={cn('absolute', 'bg-white/20', 'rounded-full', 'w-1', 'h-1')}
@@ -373,23 +465,20 @@ const handleGoogleLogin = useGoogleLogin({
               y: Math.random() * window.innerHeight,
             }}
             animate={{
-              y: [null, -30, 30, -30],
-              x: [null, 30, -30, 30],
+              y: [null, -100, 100, -50, 50],
+              x: [null, 50, -50, 30, -30],
+              opacity: [0.2, 0.5, 0.2]
             }}
             transition={{
-              duration: Math.random() * 10 + 10,
+              duration: Math.random() * 15 + 10,
               repeat: Infinity,
               ease: "linear",
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
             }}
           />
         ))}
       </div>
 
-      {/* Banner for redirect info */}
+      {/* Redirect Banner */}
       <AnimatePresence>
         {redirectUrl && (
           <motion.div
@@ -406,14 +495,19 @@ const handleGoogleLogin = useGoogleLogin({
         )}
       </AnimatePresence>
 
+      {/* Main 3D Card */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={cn('z-10', 'relative', 'bg-white/5', 'shadow-2xl', 'backdrop-blur-xl', 'border', 'border-white/10', 'rounded-3xl', 'w-full', 'max-w-6xl', 'overflow-hidden')}
+        initial={{ opacity: 0, y: 50, rotateX: -15 }}
+        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+        transition={{ duration: 0.6, type: "spring" }}
+        style={{
+          transformStyle: 'preserve-3d',
+          transform: `rotateX(${mousePosition.y * 0.1}deg) rotateY(${mousePosition.x * 0.1}deg)`,
+        }}
+        className={cn('z-10', 'relative', 'bg-white/5', 'shadow-2xl', 'backdrop-blur-xl', 'border', 'border-white/10', 'rounded-3xl', 'w-full', 'max-w-6xl', 'overflow-hidden', 'transition-all', 'duration-200')}
       >
         <div className={cn('flex', 'md:flex-row', 'flex-col')}>
-          {/* LEFT SECTION - Welcome Area */}
+          {/* LEFT SECTION - Welcome Area with 3D */}
           <div className={cn('hidden', 'relative', 'md:flex', 'bg-gradient-to-br', 'from-purple-900/50', 'to-pink-900/50', 'w-1/2', 'overflow-hidden')}>
             <div className={cn('absolute', 'inset-0')}>
               <img
@@ -425,10 +519,10 @@ const handleGoogleLogin = useGoogleLogin({
             
             <div className={cn('z-10', 'relative', 'flex', 'flex-col', 'justify-center', 'items-center', 'p-12', 'text-white', 'text-center')}>
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className={cn('bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-6', 'p-3', 'rounded-2xl')}
+                className={cn('bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-6', 'p-4', 'rounded-2xl', 'shadow-2xl')}
               >
                 <MessageCircle size={48} />
               </motion.div>
@@ -458,18 +552,43 @@ const handleGoogleLogin = useGoogleLogin({
                 transition={{ delay: 0.5 }}
                 className={cn('space-y-3', 'w-full')}
               >
-                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}>
-                  <CheckCircle size={16} className="text-green-400" />
-                  <span>100% Anonymous Messaging</span>
-                </div>
-                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}>
-                  <CheckCircle size={16} className="text-green-400" />
-                  <span>Real-time Notifications</span>
-                </div>
-                <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}>
-                  <CheckCircle size={16} className="text-green-400" />
-                  <span>Premium Features Available</span>
-                </div>
+                {[
+                  { text: "100% Anonymous Messaging", icon: Shield },
+                  { text: "Real-time Notifications", icon: Zap },
+                  { text: "Premium Features Available", icon: Star },
+                  { text: "End-to-End Encrypted", icon: Fingerprint },
+                  { text: "Global Community", icon: Globe }
+                ].map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + idx * 0.1 }}
+                    className={cn('flex', 'items-center', 'gap-2', 'text-gray-200', 'text-sm')}
+                  >
+                    <CheckCircle size={16} className="text-green-400" />
+                    <span>{item.text}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className={cn('grid', 'grid-cols-3', 'gap-4', 'mt-8', 'pt-6', 'border-t', 'border-white/20', 'w-full')}
+              >
+                {[
+                  { value: "50K+", label: "Users" },
+                  { value: "1M+", label: "Messages" },
+                  { value: "150+", label: "Countries" }
+                ].map((stat, idx) => (
+                  <div key={idx} className="text-center">
+                    <div className={cn('font-bold', 'text-white', 'text-xl')}>{stat.value}</div>
+                    <div className={cn('text-gray-400', 'text-xs')}>{stat.label}</div>
+                  </div>
+                ))}
               </motion.div>
             </div>
           </div>
@@ -482,9 +601,13 @@ const handleGoogleLogin = useGoogleLogin({
               transition={{ delay: 0.2 }}
             >
               <div className={cn('mb-8', 'text-center')}>
-                <div className={cn('md:hidden', 'inline-block', 'bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-4', 'p-2', 'rounded-xl')}>
+                <motion.div 
+                  className={cn('md:hidden', 'inline-block', 'bg-gradient-to-br', 'from-purple-500', 'to-pink-500', 'mb-4', 'p-2', 'rounded-xl')}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <MessageCircle size={32} />
-                </div>
+                </motion.div>
                 <h2 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-gray-300', 'font-bold', 'text-transparent', 'text-3xl')}>
                   Welcome Back
                 </h2>
@@ -509,7 +632,11 @@ const handleGoogleLogin = useGoogleLogin({
               </AnimatePresence>
 
               {/* Email Field */}
-              <div className="mb-5">
+              <motion.div 
+                className="mb-5"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>Email Address</label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'email' ? 'scale-[1.02]' : ''}`}>
                   <Mail size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
@@ -541,10 +668,14 @@ const handleGoogleLogin = useGoogleLogin({
                     </motion.p>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
 
               {/* Password Field */}
-              <div className="mb-5">
+              <motion.div 
+                className="mb-5"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <label className={cn('block', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>Password</label>
                 <div className={`relative transition-all duration-200 ${focusedField === 'password' ? 'scale-[1.02]' : ''}`}>
                   <Lock size={18} className={cn('top-1/2', 'left-3', 'absolute', 'text-gray-400', '-translate-y-1/2', 'transform')} />
@@ -583,7 +714,7 @@ const handleGoogleLogin = useGoogleLogin({
                     </motion.p>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
 
               {/* Remember Me & Forgot Password */}
               <div className={cn('flex', 'justify-between', 'items-center', 'mb-6')}>
@@ -637,7 +768,7 @@ const handleGoogleLogin = useGoogleLogin({
                   <div className={cn('border-white/10', 'border-t', 'w-full')}></div>
                 </div>
                 <div className={cn('relative', 'flex', 'justify-center', 'text-sm')}>
-                  <span className={cn('bg-transparent', 'px-2', 'text-gray-500')}>or</span>
+                  <span className={cn('bg-transparent', 'px-2', 'text-gray-500')}>or continue with</span>
                 </div>
               </div>
 
@@ -651,18 +782,18 @@ const handleGoogleLogin = useGoogleLogin({
                     onClick={() => handleSocialLogin(btn.provider)}
                     disabled={socialLoading !== null}
                     className={cn(
-                      'flex', 'flex-col', 'items-center', 'justify-center', 'gap-1',
-                      'py-2', 'rounded-xl', 'transition-all', 'duration-200',
+                      'group relative flex flex-col justify-center items-center gap-1 py-2 rounded-xl transition-all duration-200',
                       btn.bgGradient, btn.hoverBg,
                       'border', btn.borderColor, btn.hoverBorder,
-                      'disabled:opacity-50', 'disabled:cursor-not-allowed'
+                      'disabled:opacity-50', 'disabled:cursor-not-allowed',
+                      'overflow-hidden'
                     )}
                   >
                     {socialLoading === btn.provider ? (
                       <div className={cn('border-2', 'border-white/30', 'border-t-white', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />
                     ) : (
                       <>
-                        <btn.icon size={20} className={cn(btn.iconColor, 'transition-transform duration-200', 'group-hover:scale-110')} />
+                        <btn.icon size={20} className={cn(btn.iconColor, 'transition-all duration-300 group-hover:scale-110 group-hover:rotate-12')} />
                         <span className={cn('text-gray-300', 'text-xs')}>{btn.label}</span>
                       </>
                     )}
@@ -687,37 +818,45 @@ const handleGoogleLogin = useGoogleLogin({
               </div>
 
               {/* Security Note */}
-              <div className={cn('bg-purple-500/10', 'mt-6', 'p-3', 'border', 'border-purple-500/30', 'rounded-lg')}>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className={cn('bg-purple-500/10', 'mt-6', 'p-3', 'border', 'border-purple-500/30', 'rounded-lg')}
+              >
                 <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-400', 'text-xs')}>
                   <Shield size={14} className="text-purple-400" />
                   <span>Your data is encrypted and secure. We never share your information.</span>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </motion.div>
 
-      {/* Floating Elements */}
+      {/* Floating 3D Elements */}
       <motion.div
         animate={{
-          y: [0, -20, 0],
-          rotate: [0, 10, 0],
+          y: [0, -30, 0],
+          rotateZ: [0, 10, 0],
+          rotateX: [0, 15, 0],
         }}
         transition={{
           duration: 6,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className={cn('hidden', 'lg:block', 'bottom-10', 'left-10', 'fixed', 'opacity-20', 'pointer-events-none')}
+        className={cn('hidden', 'lg:block', 'bottom-10', 'left-10', 'fixed', 'opacity-30', 'pointer-events-none')}
+        style={{ transformStyle: 'preserve-3d' }}
       >
         <Sparkles size={64} className="text-purple-500" />
       </motion.div>
 
       <motion.div
         animate={{
-          y: [0, 20, 0],
-          rotate: [0, -10, 0],
+          y: [0, 30, 0],
+          rotateZ: [0, -10, 0],
+          rotateY: [0, 15, 0],
         }}
         transition={{
           duration: 7,
@@ -725,7 +864,8 @@ const handleGoogleLogin = useGoogleLogin({
           ease: "easeInOut",
           delay: 1,
         }}
-        className={cn('hidden', 'lg:block', 'top-10', 'right-10', 'fixed', 'opacity-20', 'pointer-events-none')}
+        className={cn('hidden', 'lg:block', 'top-10', 'right-10', 'fixed', 'opacity-30', 'pointer-events-none')}
+        style={{ transformStyle: 'preserve-3d' }}
       >
         <Key size={64} className="text-pink-500" />
       </motion.div>

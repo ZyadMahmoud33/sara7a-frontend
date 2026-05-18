@@ -103,7 +103,6 @@ export const getUserByIdAPI = async (id) => {
     const response = await API.get(USER_ENDPOINTS.GET_BY_ID(id));
     const userData = handleResponse(response);
     
-    // ✅ تصحيح مسار الصورة
     const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     if (userData?.profilePic && userData.profilePic.startsWith('/uploads')) {
       userData.profilePic = `${baseUrl}${userData.profilePic}`;
@@ -125,7 +124,6 @@ export const getUserByUsernameAPI = async (username) => {
     const response = await API.get(USER_ENDPOINTS.GET_BY_USERNAME(username));
     const userData = handleResponse(response);
     
-    // ✅ تصحيح مسار الصورة
     const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     if (userData?.profilePic && userData.profilePic.startsWith('/uploads')) {
       userData.profilePic = `${baseUrl}${userData.profilePic}`;
@@ -160,17 +158,27 @@ export const updatePasswordAPI = async ({ oldPassword, newPassword, confirmNewPa
 // ================================
 export const uploadProfilePicAPI = async (file) => {
   try {
-    if (!file) throw new Error("File is required ❌");
-    
     const formData = new FormData();
     formData.append("attachments", file);
 
     const response = await API.patch(USER_ENDPOINTS.UPDATE_PROFILE_PIC, formData);
+    const result = handleResponse(response);
     
-    return handleResponse(response);
+    console.log("📤 Upload API response:", result);
+    
+    // ✅ بناء الرابط الكامل
+    if (result?.profilePic) {
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const fullUrl = result.profilePic.startsWith('http') 
+        ? result.profilePic 
+        : `${baseUrl}${result.profilePic}`;
+      return { ...result, profilePic: fullUrl };
+    }
+    
+    return result;
   } catch (error) {
-    console.error("Upload profile pic error:", error);
-    throw new Error(error?.response?.data?.message || "Failed to upload profile picture ❌");
+    console.error("Upload error:", error);
+    throw error;
   }
 };
 
@@ -187,7 +195,6 @@ export const uploadCoverPicsAPI = async (files) => {
     
     if (Array.isArray(files)) {
       files.forEach((file) => formData.append("attachments", file));
-      formData.append("attachments", files);
     } else {
       formData.append("attachments", files);
     }
@@ -209,7 +216,7 @@ export const uploadCoverPicsAPI = async (files) => {
 // ================================
 export const updateProfileAPI = async (profileData) => {
   try {
-    console.log("📤 updateProfileAPI - received data:", profileData); // ✅ أضف ده
+    console.log("📤 updateProfileAPI - received data:", profileData);
     
     const cleanedData = {};
     
@@ -219,14 +226,14 @@ export const updateProfileAPI = async (profileData) => {
       }
     }
     
-    console.log("📤 updateProfileAPI - cleaned data:", cleanedData); // ✅ أضف ده
+    console.log("📤 updateProfileAPI - cleaned data:", cleanedData);
     
     if (Object.keys(cleanedData).length === 0) {
       throw new Error("No data to update");
     }
     
     const response = await API.patch(USER_ENDPOINTS.UPDATE_PROFILE, cleanedData);
-    console.log("📥 updateProfileAPI - response:", response.data); // ✅ أضف ده
+    console.log("📥 updateProfileAPI - response:", response.data);
     
     return handleResponse(response);
   } catch (error) {
@@ -313,14 +320,12 @@ export const createManualPaymentAPI = async ({ plan, method, screenshot }) => {
 // ================================
 // 🎬 WATCH AD TO EARN COINS
 // ================================
-
 export const watchAdAPI = async () => {
   try {
     const response = await API.post(USER_ENDPOINTS.WATCH_AD, {});
     
     console.log("🎬 Watch ad response:", response.data);
     
-    // ✅ بما إن successResponse بترجع { success: true, message, data }
     const data = response?.data?.data || {};
     
     return {
@@ -329,7 +334,7 @@ export const watchAdAPI = async () => {
       dailyAdWatched: data?.dailyAdWatched || 0,
       remainingAds: data?.remainingAds || (5 - (data?.dailyAdWatched || 0)),
       canWatch: data?.canWatch !== false,
-      nextReset: data?.nextReset || null,  // ✅ أضفنا nextReset
+      nextReset: data?.nextReset || null,
       message: response?.data?.message || "You earned 5 coins! 🎉",
     };
   } catch (error) {
