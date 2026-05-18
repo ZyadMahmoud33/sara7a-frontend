@@ -26,11 +26,14 @@ import { cn } from "@/lib/utils";
 import RevealSender from "../../components/RevealSender";
 
 // 🌟 Starfield Canvas Component with more stars and colors
+// 🌟 Starfield Canvas Component
 const Starfield = () => {
   const canvasRef = useRef(null);
   
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
     let stars = [];
     let coloredStars = [];
@@ -74,7 +77,7 @@ const Starfield = () => {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
+        this.size = Math.random() * 3 + 1.5;
         this.speed = Math.random() * 0.1;
         this.colors = ['#a855f7', '#ec4899', '#06b6d4', '#10b981', '#f59e0b', '#3b82f6'];
         this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
@@ -102,14 +105,16 @@ const Starfield = () => {
     }
     
     // Create stars
-    for (let i = 0; i < 400; i++) {
+    for (let i = 0; i < 600; i++) {
       stars.push(new Star());
     }
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 150; i++) {
       coloredStars.push(new ColoredStar());
     }
     
     const animate = () => {
+      if (!canvas || !ctx) return;
+      
       ctx.fillStyle = '#050510';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
@@ -122,10 +127,8 @@ const Starfield = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      stars.forEach(star => star.update());
-      stars.forEach(star => star.draw());
-      coloredStars.forEach(star => star.update());
-      coloredStars.forEach(star => star.draw());
+      stars.forEach(star => { star.update(); star.draw(); });
+      coloredStars.forEach(star => { star.update(); star.draw(); });
       
       animationId = requestAnimationFrame(animate);
     };
@@ -136,13 +139,12 @@ const Starfield = () => {
     
     return () => {
       window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationId);
+      if (animationId) cancelAnimationFrame(animationId);
     };
   }, []);
   
-  return <canvas ref={canvasRef} className="z-0 fixed inset-0 w-full h-full pointer-events-none" />;
+  return <canvas ref={canvasRef} className={cn('top-0', 'left-0', 'z-0', 'fixed', 'pointer-events-none')} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }} />;
 };
-
 // Copy Button Component with animation
 const CopyButton = ({ text, id, label = "Copy" }) => {
   const [copied, setCopied] = useState(false);
@@ -160,7 +162,7 @@ const CopyButton = ({ text, id, label = "Copy" }) => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={handleCopy}
-      className="flex items-center gap-2 bg-gradient-to-r from-emerald-500/20 hover:from-emerald-500/30 to-teal-500/20 hover:to-teal-500/30 px-4 py-2 border border-emerald-500/30 rounded-lg text-emerald-400 transition-all duration-200"
+      className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-emerald-500/20', 'hover:from-emerald-500/30', 'to-teal-500/20', 'hover:to-teal-500/30', 'px-4', 'py-2', 'border', 'border-emerald-500/30', 'rounded-lg', 'text-emerald-400', 'transition-all', 'duration-200')}
     >
       {copied ? <CopyCheck size={16} className="text-emerald-400" /> : <Copy size={16} />}
       {copied ? "Copied" : label}
@@ -440,43 +442,43 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="relative flex flex-col justify-center items-center bg-[#050510] min-h-screen overflow-hidden">
+      <div className={cn('relative', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-[#050510]', 'min-h-screen', 'overflow-hidden')}>
         <Starfield />
-        <div className="fixed inset-0">
-          <div className="top-1/2 left-1/2 absolute bg-purple-600/20 blur-[120px] rounded-full w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        <div className={cn('fixed', 'inset-0')}>
+          <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-purple-600/20', 'blur-[120px]', 'rounded-full', 'w-[500px]', 'h-[500px]', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse')} />
         </div>
-        <motion.div animate={{ rotate: 360, scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="z-10 relative">
+        <motion.div animate={{ rotate: 360, scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className={cn('z-10', 'relative')}>
           <div className="relative">
-            <div className="absolute inset-0 bg-purple-500/30 blur-xl rounded-full animate-ping" />
-            <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-4 rounded-2xl">
+            <div className={cn('absolute', 'inset-0', 'bg-purple-500/30', 'blur-xl', 'rounded-full', 'animate-ping')} />
+            <div className={cn('relative', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'p-4', 'rounded-2xl')}>
               <MessageCircle size={48} className="text-white" />
             </div>
           </div>
         </motion.div>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="z-10 relative mt-4 text-gray-400">Loading your dashboard...</motion.p>
-        <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, repeat: Infinity }} className="z-10 relative bg-gradient-to-r from-transparent via-purple-500 to-transparent mt-4 rounded-full w-48 h-0.5" />
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={cn('z-10', 'relative', 'mt-4', 'text-gray-400')}>Loading your dashboard...</motion.p>
+        <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, repeat: Infinity }} className={cn('z-10', 'relative', 'bg-gradient-to-r', 'from-transparent', 'via-purple-500', 'to-transparent', 'mt-4', 'rounded-full', 'w-48', 'h-0.5')} />
       </div>
     );
   }
 
   return (
-    <div className="relative bg-[#050510] min-h-screen overflow-hidden text-white">
+    <div className={cn('relative', 'bg-[#050510]', 'min-h-screen', 'overflow-hidden', 'text-white')}>
       {/* Starfield Background */}
       <Starfield />
       
       {/* Animated Nebula Orbs */}
-      <div className="z-0 fixed inset-0 pointer-events-none">
-        <div className="top-20 right-10 absolute bg-purple-600/20 blur-[120px] rounded-full w-96 h-96 animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="bottom-20 left-10 absolute bg-pink-600/15 blur-[100px] rounded-full w-80 h-80 animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-        <div className="top-1/2 left-1/2 absolute bg-cyan-600/10 blur-[80px] rounded-full w-64 h-64 -translate-x-1/2 -translate-y-1/2 animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
+      <div className={cn('z-0', 'fixed', 'inset-0', 'pointer-events-none')}>
+        <div className={cn('top-20', 'right-10', 'absolute', 'bg-purple-600/20', 'blur-[120px]', 'rounded-full', 'w-96', 'h-96', 'animate-pulse')} style={{ animationDuration: '8s' }} />
+        <div className={cn('bottom-20', 'left-10', 'absolute', 'bg-pink-600/15', 'blur-[100px]', 'rounded-full', 'w-80', 'h-80', 'animate-pulse')} style={{ animationDuration: '10s', animationDelay: '2s' }} />
+        <div className={cn('top-1/2', 'left-1/2', 'absolute', 'bg-cyan-600/10', 'blur-[80px]', 'rounded-full', 'w-64', 'h-64', '-translate-x-1/2', '-translate-y-1/2', 'animate-pulse')} style={{ animationDuration: '12s', animationDelay: '4s' }} />
       </div>
 
       {/* Floating Particles */}
-      <div className="z-0 fixed inset-0 pointer-events-none">
+      <div className={cn('z-0', 'fixed', 'inset-0', 'pointer-events-none')}>
         {[...Array(80)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full"
+            className={cn('absolute', 'rounded-full')}
             style={{
               width: Math.random() * 3 + 1 + "px",
               height: Math.random() * 3 + 1 + "px",
@@ -502,14 +504,14 @@ export default function Dashboard() {
 
       <AnimatePresence>
         {showSparkles && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="z-50 fixed inset-0 pointer-events-none">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={cn('z-50', 'fixed', 'inset-0', 'pointer-events-none')}>
             {[...Array(150)].map((_, i) => (
               <motion.div
                 key={i}
                 initial={{ scale: 0, x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, opacity: 1 }}
                 animate={{ scale: [0, 1.5, 0], opacity: [1, 0.5, 0], y: [null, -200], rotate: [0, 180, 360] }}
                 transition={{ duration: 1.5, delay: Math.random() * 0.5 }}
-                className="absolute rounded-full"
+                className={cn('absolute', 'rounded-full')}
                 style={{
                   width: Math.random() * 8 + 2 + "px",
                   height: Math.random() * 8 + 2 + "px",
@@ -522,53 +524,53 @@ export default function Dashboard() {
         )}
       </AnimatePresence>
 
-      <div className="z-10 relative mx-auto p-4 md:p-6 max-w-7xl">
+      <div className={cn('z-10', 'relative', 'mx-auto', 'p-4', 'md:p-6', 'max-w-7xl')}>
         {/* Header - Glassmorphism Space Style */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative mb-8"
+          className={cn('relative', 'mb-8')}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-transparent to-pink-500/20 blur-xl rounded-2xl" />
-          <div className="relative bg-black/30 backdrop-blur-2xl p-6 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="top-0 right-0 absolute bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-3xl rounded-full w-96 h-96" />
+          <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-purple-500/20', 'via-transparent', 'to-pink-500/20', 'blur-xl', 'rounded-2xl')} />
+          <div className={cn('relative', 'bg-black/30', 'backdrop-blur-2xl', 'p-6', 'border', 'border-white/10', 'rounded-2xl', 'overflow-hidden')}>
+            <div className={cn('top-0', 'right-0', 'absolute', 'bg-gradient-to-br', 'from-purple-500/10', 'to-pink-500/10', 'blur-3xl', 'rounded-full', 'w-96', 'h-96')} />
             
-            <div className="relative flex lg:flex-row flex-col justify-between items-center gap-4">
-              <div className="flex items-center gap-4">
+            <div className={cn('relative', 'flex', 'lg:flex-row', 'flex-col', 'justify-between', 'items-center', 'gap-4')}>
+              <div className={cn('flex', 'items-center', 'gap-4')}>
                 <motion.div whileHover={{ scale: 1.1, rotate: 360 }} transition={{ duration: 0.5 }} className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 blur-lg rounded-2xl" />
-                  <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-2xl">
+                  <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'blur-lg', 'rounded-2xl')} />
+                  <div className={cn('relative', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'p-3', 'rounded-2xl')}>
                     <MessageCircle size={28} className="text-white" />
                   </div>
                 </motion.div>
                 <div>
-                  <h1 className="bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200 font-bold text-transparent text-3xl">Welcome back, {user?.firstName || "User"}! 👋</h1>
-                  <p className="text-gray-400 text-sm">Manage your anonymous messages</p>
+                  <h1 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'via-purple-200', 'to-pink-200', 'font-bold', 'text-transparent', 'text-3xl')}>Welcome back, {user?.firstName || "User"}! 👋</h1>
+                  <p className={cn('text-gray-400', 'text-sm')}>Manage your anonymous messages</p>
                 </div>
               </div>
               
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className={cn('flex', 'flex-wrap', 'justify-center', 'gap-3')}>
                 <motion.div whileHover={{ scale: 1.05 }} className={`px-3 py-1.5 rounded-full text-sm flex items-center gap-2 shadow-lg ${userPlan === "premium" ? "bg-gradient-to-r from-yellow-500 to-orange-500" : userPlan === "pro" ? "bg-gradient-to-r from-cyan-500 to-blue-500" : "bg-gray-600"}`}>
-                  {userPlan === "premium" && <Crown size={14} className="text-yellow-300 animate-pulse" />}
+                  {userPlan === "premium" && <Crown size={14} className={cn('text-yellow-300', 'animate-pulse')} />}
                   {userPlan === "pro" && <Zap size={14} />}
-                  <span className="font-medium capitalize">{userPlan || "free"}</span>
+                  <span className={cn('font-medium', 'capitalize')}>{userPlan || "free"}</span>
                   {userPlan === "pro" && (
-                    <span className="flex items-center gap-1 bg-white/20 ml-1 px-1.5 py-0.5 rounded text-xs">
+                    <span className={cn('flex', 'items-center', 'gap-1', 'bg-white/20', 'ml-1', 'px-1.5', 'py-0.5', 'rounded', 'text-xs')}>
                       <Coins size={10} />{user?.coins || 0}
                     </span>
                   )}
                 </motion.div>
                 
-                <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/profile-settings")} className="flex items-center gap-2 bg-purple-500/20 hover:bg-purple-500/30 backdrop-blur-sm px-4 py-2 border border-purple-500/30 rounded-xl text-purple-400 transition-all duration-200">
+                <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/profile-settings")} className={cn('flex', 'items-center', 'gap-2', 'bg-purple-500/20', 'hover:bg-purple-500/30', 'backdrop-blur-sm', 'px-4', 'py-2', 'border', 'border-purple-500/30', 'rounded-xl', 'text-purple-400', 'transition-all', 'duration-200')}>
                   <Settings size={18} /> Edit Profile
                 </motion.button>
                 
-                <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={refreshData} disabled={refreshing} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200">
+                <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={refreshData} disabled={refreshing} className={cn('flex', 'items-center', 'gap-2', 'bg-white/10', 'hover:bg-white/20', 'disabled:opacity-50', 'backdrop-blur-sm', 'px-4', 'py-2', 'rounded-xl', 'transition-all', 'duration-200')}>
                   <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} /> Refresh
                 </motion.button>
                 
-                <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={handleLogout} className="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 backdrop-blur-sm px-5 py-2 border border-red-500/30 rounded-xl text-red-400 transition-all duration-200">
+                <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={handleLogout} className={cn('flex', 'items-center', 'gap-2', 'bg-red-500/20', 'hover:bg-red-500/30', 'backdrop-blur-sm', 'px-5', 'py-2', 'border', 'border-red-500/30', 'rounded-xl', 'text-red-400', 'transition-all', 'duration-200')}>
                   <LogOut size={18} /> Logout
                 </motion.button>
               </div>
@@ -577,7 +579,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Stats Grid - باورق متوهجة فضائية */}
-        <div className="gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+        <div className={cn('gap-5', 'grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-5', 'mb-8')}>
           {[
             { label: "Total Messages", value: stats.total, icon: Inbox, color: "from-blue-600 to-cyan-600", glow: "shadow-[0_0_30px_rgba(37,99,235,0.3)]", emoji: "📩" },
             { label: "Messages Revealed", value: stats.revealed, icon: Eye, color: "from-emerald-600 to-teal-600", glow: "shadow-[0_0_30px_rgba(16,185,129,0.3)]", emoji: "👁️" },
@@ -595,17 +597,17 @@ export default function Dashboard() {
               onHoverEnd={() => setHoveredCard(null)}
               className={`relative bg-gradient-to-br ${stat.color} p-5 rounded-2xl cursor-pointer overflow-hidden transition-all duration-300 ${hoveredCard === index ? `shadow-2xl ${stat.glow}` : "shadow-xl"}`}
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-              <motion.div animate={{ y: [0, -8, 0], rotate: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }} className="-top-2 -right-2 absolute opacity-20 text-4xl">{stat.emoji}</motion.div>
-              <div className="z-10 relative flex justify-between items-start">
+              <div className={cn('absolute', 'inset-0', 'bg-gradient-to-t', 'from-white/5', 'to-transparent', 'opacity-0', 'hover:opacity-100', 'transition-opacity', 'duration-300')} />
+              <motion.div animate={{ y: [0, -8, 0], rotate: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }} className={cn('-top-2', '-right-2', 'absolute', 'opacity-20', 'text-4xl')}>{stat.emoji}</motion.div>
+              <div className={cn('z-10', 'relative', 'flex', 'justify-between', 'items-start')}>
                 <div>
-                  <p className="font-medium text-white/80 text-sm uppercase tracking-wider">{stat.label}</p>
-                  <p className="mt-2 font-bold text-white text-3xl">{stat.value}</p>
+                  <p className={cn('font-medium', 'text-white/80', 'text-sm', 'uppercase', 'tracking-wider')}>{stat.label}</p>
+                  <p className={cn('mt-2', 'font-bold', 'text-white', 'text-3xl')}>{stat.value}</p>
                 </div>
-                <stat.icon size={28} className="text-white/50 hover:text-white/80 hover:scale-110 transition-all duration-300" />
+                <stat.icon size={28} className={cn('text-white/50', 'hover:text-white/80', 'hover:scale-110', 'transition-all', 'duration-300')} />
               </div>
               {hoveredCard === index && (
-                <motion.div layoutId="cardGlow" className="absolute inset-0 rounded-2xl pointer-events-none" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ boxShadow: `0 0 40px rgba(139,92,246,0.4)` }} />
+                <motion.div layoutId="cardGlow" className={cn('absolute', 'inset-0', 'rounded-2xl', 'pointer-events-none')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ boxShadow: `0 0 40px rgba(139,92,246,0.4)` }} />
               )}
             </motion.div>
           ))}
@@ -616,43 +618,43 @@ export default function Dashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="relative mb-8"
+          className={cn('relative', 'mb-8')}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 blur-xl rounded-2xl" />
-          <div className="relative bg-black/30 backdrop-blur-2xl p-6 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="top-0 right-0 absolute bg-gradient-to-br from-cyan-500/10 to-purple-500/10 blur-3xl rounded-full w-64 h-64" />
+          <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-cyan-500/10', 'to-purple-500/10', 'blur-xl', 'rounded-2xl')} />
+          <div className={cn('relative', 'bg-black/30', 'backdrop-blur-2xl', 'p-6', 'border', 'border-white/10', 'rounded-2xl', 'overflow-hidden')}>
+            <div className={cn('top-0', 'right-0', 'absolute', 'bg-gradient-to-br', 'from-cyan-500/10', 'to-purple-500/10', 'blur-3xl', 'rounded-full', 'w-64', 'h-64')} />
             
-            <div className="relative flex lg:flex-row flex-col justify-between items-start lg:items-center gap-6">
-              <div className="flex items-center gap-5">
+            <div className={cn('relative', 'flex', 'lg:flex-row', 'flex-col', 'justify-between', 'items-start', 'lg:items-center', 'gap-6')}>
+              <div className={cn('flex', 'items-center', 'gap-5')}>
                 <motion.div whileHover={{ scale: 1.05 }} className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 blur-md rounded-full" />
-                  <div className="relative flex justify-center items-center bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full w-20 h-20 overflow-hidden">
+                  <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-cyan-500', 'to-purple-500', 'blur-md', 'rounded-full')} />
+                  <div className={cn('relative', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-r', 'from-cyan-500', 'to-purple-500', 'rounded-full', 'w-20', 'h-20', 'overflow-hidden')}>
                     {user?.profilePic ? (
-                      <img src={getImageUrl(user.profilePic)} alt="Profile" className="rounded-full w-full h-full object-cover" />
+                      <img src={getImageUrl(user.profilePic)} alt="Profile" className={cn('rounded-full', 'w-full', 'h-full', 'object-cover')} />
                     ) : (
                       <User size={36} className="text-white" />
                     )}
                   </div>
                 </motion.div>
                 <div>
-                  <h2 className="bg-clip-text bg-gradient-to-r from-white to-cyan-200 font-bold text-transparent text-2xl">{user?.firstName || "User"} {user?.lastName || ""}</h2>
-                  <div className="flex flex-wrap gap-3 mt-2">
-                    <div className="flex items-center gap-1.5 text-gray-400"><Mail size={14} /><span className="text-sm">{user?.email || "No email"}</span></div>
-                    <div className="flex items-center gap-1.5 text-gray-400"><Calendar size={14} /><span className="text-sm">Joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "recently"}</span></div>
+                  <h2 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-cyan-200', 'font-bold', 'text-transparent', 'text-2xl')}>{user?.firstName || "User"} {user?.lastName || ""}</h2>
+                  <div className={cn('flex', 'flex-wrap', 'gap-3', 'mt-2')}>
+                    <div className={cn('flex', 'items-center', 'gap-1.5', 'text-gray-400')}><Mail size={14} /><span className="text-sm">{user?.email || "No email"}</span></div>
+                    <div className={cn('flex', 'items-center', 'gap-1.5', 'text-gray-400')}><Calendar size={14} /><span className="text-sm">Joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "recently"}</span></div>
                   </div>
                 </div>
               </div>
               
-              <div className="flex flex-wrap gap-3">
+              <div className={cn('flex', 'flex-wrap', 'gap-3')}>
                 {!user?.isPremium && userPlan !== "pro" && (
-                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/premium")} className="group relative flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg px-6 py-3 rounded-xl overflow-hidden font-bold text-black">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 transition-transform -translate-x-full group-hover:translate-x-full duration-500" />
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/premium")} className={cn('group', 'relative', 'flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-yellow-400', 'to-orange-500', 'shadow-lg', 'px-6', 'py-3', 'rounded-xl', 'overflow-hidden', 'font-bold', 'text-black')}>
+                    <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-white/0', 'via-white/30', 'to-white/0', 'transition-transform', '-translate-x-full', 'group-hover:translate-x-full', 'duration-500')} />
                     <Crown size={18} /> Upgrade to Premium ⭐
                   </motion.button>
                 )}
                 {userPlan === "pro" && !user?.isPremium && (
-                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/premium")} className="group relative flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg px-6 py-3 rounded-xl overflow-hidden font-bold text-white">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transition-transform -translate-x-full group-hover:translate-x-full duration-500" />
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/premium")} className={cn('group', 'relative', 'flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'shadow-lg', 'px-6', 'py-3', 'rounded-xl', 'overflow-hidden', 'font-bold', 'text-white')}>
+                    <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-white/0', 'via-white/20', 'to-white/0', 'transition-transform', '-translate-x-full', 'group-hover:translate-x-full', 'duration-500')} />
                     <Crown size={18} /> Upgrade to Premium
                   </motion.button>
                 )}
@@ -661,18 +663,18 @@ export default function Dashboard() {
 
             {/* Share Section with Enhanced Copy Link Button */}
             <div className="mt-6">
-              <label className="block flex items-center gap-2 mb-2 font-medium text-gray-300 text-sm">
+              <label className={cn('block', 'flex', 'items-center', 'gap-2', 'mb-2', 'font-medium', 'text-gray-300', 'text-sm')}>
                 <Globe size={14} className="text-cyan-400" /> Your Public Profile Link
               </label>
-              <div className="flex gap-3">
-                <div className="group relative flex-1">
+              <div className={cn('flex', 'gap-3')}>
+                <div className={cn('group', 'relative', 'flex-1')}>
                   <input 
                     value={publicLink} 
                     readOnly 
-                    className="bg-black/40 p-3.5 border border-white/10 focus:border-purple-500 group-hover:border-purple-500/50 rounded-xl focus:outline-none w-full font-mono text-sm transition-all duration-200" 
+                    className={cn('bg-black/40', 'p-3.5', 'border', 'border-white/10', 'focus:border-purple-500', 'group-hover:border-purple-500/50', 'rounded-xl', 'focus:outline-none', 'w-full', 'font-mono', 'text-sm', 'transition-all', 'duration-200')} 
                   />
-                  <div className="right-3 absolute inset-y-0 flex items-center gap-2">
-                    <div className="bg-green-500 rounded-full w-2 h-2 animate-pulse" />
+                  <div className={cn('right-3', 'absolute', 'inset-y-0', 'flex', 'items-center', 'gap-2')}>
+                    <div className={cn('bg-green-500', 'rounded-full', 'w-2', 'h-2', 'animate-pulse')} />
                   </div>
                 </div>
                 
@@ -681,9 +683,9 @@ export default function Dashboard() {
                   whileHover={{ scale: 1.05, y: -2 }} 
                   whileTap={{ scale: 0.95 }} 
                   onClick={copyLink}
-                  className="group relative flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg px-6 rounded-xl overflow-hidden font-medium"
+                  className={cn('group', 'relative', 'flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-emerald-500', 'to-teal-600', 'shadow-lg', 'px-6', 'rounded-xl', 'overflow-hidden', 'font-medium')}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 transition-transform -translate-x-full group-hover:translate-x-full duration-500" />
+                  <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-white/0', 'via-white/30', 'to-white/0', 'transition-transform', '-translate-x-full', 'group-hover:translate-x-full', 'duration-500')} />
                   {linkCopied ? (
                     <>
                       <Check size={18} className="text-white" />
@@ -707,7 +709,7 @@ export default function Dashboard() {
                       copyLink(); 
                     } 
                   }} 
-                  className="flex items-center gap-2 bg-purple-500/20 hover:bg-purple-500/30 backdrop-blur-sm px-4 border border-purple-500/30 rounded-xl transition-all duration-200"
+                  className={cn('flex', 'items-center', 'gap-2', 'bg-purple-500/20', 'hover:bg-purple-500/30', 'backdrop-blur-sm', 'px-4', 'border', 'border-purple-500/30', 'rounded-xl', 'transition-all', 'duration-200')}
                 >
                   <Share2 size={18} /> Share
                 </motion.button>
@@ -716,13 +718,13 @@ export default function Dashboard() {
 
             {/* Ad Banner */}
             {userPlan === "free" && dailyAdWatched < MAX_ADS_PER_DAY && (
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setShowAdModal(true)} className="group flex justify-center items-center gap-3 bg-gradient-to-r from-yellow-500/20 hover:from-yellow-500/30 to-orange-500/20 hover:to-orange-500/30 mt-5 py-3 border border-yellow-500/30 rounded-xl w-full font-medium text-sm transition-all duration-200">
-                <Video size={16} className="text-yellow-400 group-hover:scale-110 transition-transform" /> Watch Ad to Earn +5 Coins
-                <span className="ml-1 text-yellow-400 text-xs">({dailyAdWatched}/{MAX_ADS_PER_DAY} today)</span>
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setShowAdModal(true)} className={cn('group', 'flex', 'justify-center', 'items-center', 'gap-3', 'bg-gradient-to-r', 'from-yellow-500/20', 'hover:from-yellow-500/30', 'to-orange-500/20', 'hover:to-orange-500/30', 'mt-5', 'py-3', 'border', 'border-yellow-500/30', 'rounded-xl', 'w-full', 'font-medium', 'text-sm', 'transition-all', 'duration-200')}>
+                <Video size={16} className={cn('text-yellow-400', 'group-hover:scale-110', 'transition-transform')} /> Watch Ad to Earn +5 Coins
+                <span className={cn('ml-1', 'text-yellow-400', 'text-xs')}>({dailyAdWatched}/{MAX_ADS_PER_DAY} today)</span>
               </motion.button>
             )}
             {userPlan === "free" && dailyAdWatched >= MAX_ADS_PER_DAY && (
-              <div className="flex justify-center items-center gap-2 bg-gray-500/10 mt-5 py-3 rounded-lg w-full text-gray-500 text-sm">
+              <div className={cn('flex', 'justify-center', 'items-center', 'gap-2', 'bg-gray-500/10', 'mt-5', 'py-3', 'rounded-lg', 'w-full', 'text-gray-500', 'text-sm')}>
                 <Clock size={14} /> Daily ad limit reached ({MAX_ADS_PER_DAY}/{MAX_ADS_PER_DAY}). Come back tomorrow!
               </div>
             )}
@@ -736,36 +738,36 @@ export default function Dashboard() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="relative"
         >
-          <div className="relative bg-black/30 backdrop-blur-2xl p-6 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="top-0 left-0 absolute bg-gradient-to-r from-transparent via-pink-500 to-transparent w-full h-0.5" />
+          <div className={cn('relative', 'bg-black/30', 'backdrop-blur-2xl', 'p-6', 'border', 'border-white/10', 'rounded-2xl', 'overflow-hidden')}>
+            <div className={cn('top-0', 'left-0', 'absolute', 'bg-gradient-to-r', 'from-transparent', 'via-pink-500', 'to-transparent', 'w-full', 'h-0.5')} />
             
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-3">
+            <div className={cn('flex', 'justify-between', 'items-center', 'mb-6')}>
+              <div className={cn('flex', 'items-center', 'gap-3')}>
                 <div className="relative">
-                  <div className="absolute inset-0 bg-pink-500 blur-sm rounded-lg" />
-                  <MessageCircle size={24} className="relative text-pink-400" />
+                  <div className={cn('absolute', 'inset-0', 'bg-pink-500', 'blur-sm', 'rounded-lg')} />
+                  <MessageCircle size={24} className={cn('relative', 'text-pink-400')} />
                 </div>
-                <h2 className="bg-clip-text bg-gradient-to-r from-white to-pink-200 font-bold text-transparent text-2xl">Messages 💬</h2>
+                <h2 className={cn('bg-clip-text', 'bg-gradient-to-r', 'from-white', 'to-pink-200', 'font-bold', 'text-transparent', 'text-2xl')}>Messages 💬</h2>
                 {messages.length > 0 && (
-                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-purple-500/20 px-2.5 py-1 border border-purple-500/30 rounded-lg text-sm">
+                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className={cn('bg-purple-500/20', 'px-2.5', 'py-1', 'border', 'border-purple-500/30', 'rounded-lg', 'text-sm')}>
                     {messages.length} total
                   </motion.span>
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                <Activity size={18} className="text-gray-500 animate-pulse" />
-                <span className="text-gray-500 text-sm">Live Updates</span>
+              <div className={cn('flex', 'items-center', 'gap-2')}>
+                <Activity size={18} className={cn('text-gray-500', 'animate-pulse')} />
+                <span className={cn('text-gray-500', 'text-sm')}>Live Updates</span>
               </div>
             </div>
 
             {messages.length === 0 ? (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-20 text-center">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={cn('py-20', 'text-center')}>
                 <motion.div animate={{ y: [0, -15, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-                  <Inbox size={80} className="mx-auto mb-4 text-gray-600" />
+                  <Inbox size={80} className={cn('mx-auto', 'mb-4', 'text-gray-600')} />
                 </motion.div>
-                <p className="text-gray-400 text-xl">No messages yet 😢</p>
-                <p className="mt-2 text-gray-500 text-sm">Share your profile link to receive anonymous messages!</p>
-                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={copyLink} className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg mt-6 px-6 py-2.5 rounded-xl">
+                <p className={cn('text-gray-400', 'text-xl')}>No messages yet 😢</p>
+                <p className={cn('mt-2', 'text-gray-500', 'text-sm')}>Share your profile link to receive anonymous messages!</p>
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={copyLink} className={cn('inline-flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'shadow-lg', 'mt-6', 'px-6', 'py-2.5', 'rounded-xl')}>
                   <Send size={18} /> Share Your Link
                 </motion.button>
               </motion.div>
@@ -791,46 +793,46 @@ export default function Dashboard() {
                           onHoverEnd={() => setHoveredMessage(null)}
                           className={`group relative bg-gradient-to-r from-white/10 to-transparent p-5 rounded-xl border transition-all duration-300 cursor-pointer ${hoveredMessage === idx ? "border-purple-500/50 shadow-xl shadow-purple-500/20" : "border-white/10"}`}
                         >
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          <div className="top-0 left-0 absolute bg-gradient-to-b from-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 w-1 h-full transition-opacity duration-300" />
+                          <div className={cn('absolute', 'inset-0', 'bg-gradient-to-r', 'from-purple-500/0', 'via-purple-500/5', 'to-transparent', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity', 'duration-300')} />
+                          <div className={cn('top-0', 'left-0', 'absolute', 'bg-gradient-to-b', 'from-purple-500', 'to-pink-500', 'opacity-0', 'group-hover:opacity-100', 'w-1', 'h-full', 'transition-opacity', 'duration-300')} />
                           
-                          <div className="relative flex justify-between items-start gap-4">
+                          <div className={cn('relative', 'flex', 'justify-between', 'items-start', 'gap-4')}>
                             <div className="flex-1">
-                              <div className="flex flex-wrap items-center gap-2 mb-2">
-                                <span className="bg-white/5 px-2.5 py-1 rounded-lg font-mono text-gray-500 text-xs">#{(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}</span>
-                                <span className="flex items-center gap-1 text-gray-500 text-xs"><Calendar size={12} />{formatDate(msg.createdAt)}</span>
+                              <div className={cn('flex', 'flex-wrap', 'items-center', 'gap-2', 'mb-2')}>
+                                <span className={cn('bg-white/5', 'px-2.5', 'py-1', 'rounded-lg', 'font-mono', 'text-gray-500', 'text-xs')}>#{(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}</span>
+                                <span className={cn('flex', 'items-center', 'gap-1', 'text-gray-500', 'text-xs')}><Calendar size={12} />{formatDate(msg.createdAt)}</span>
                               </div>
-                              <p className="mt-2 text-gray-200 line-clamp-2 leading-relaxed">"{msg.content || "No content"}"</p>
+                              <p className={cn('mt-2', 'text-gray-200', 'line-clamp-2', 'leading-relaxed')}>"{msg.content || "No content"}"</p>
                               <div className="mt-3">
                                 {isSenderRevealed ? (
-                                  <motion.div whileHover={{ scale: 1.02 }} className="inline-flex items-center gap-3 bg-green-500/10 px-3 py-2 rounded-lg">
+                                  <motion.div whileHover={{ scale: 1.02 }} className={cn('inline-flex', 'items-center', 'gap-3', 'bg-green-500/10', 'px-3', 'py-2', 'rounded-lg')}>
                                     {!hasImageError && senderData.profilePic ? (
-                                      <img key={`img-${msg._id}`} src={getImageUrl(senderData.profilePic)} alt={senderData.firstName} className="border border-green-500 rounded-full w-6 h-6 object-cover" onError={() => handleImageError(msg._id, senderData._id)} />
+                                      <img key={`img-${msg._id}`} src={getImageUrl(senderData.profilePic)} alt={senderData.firstName} className={cn('border', 'border-green-500', 'rounded-full', 'w-6', 'h-6', 'object-cover')} onError={() => handleImageError(msg._id, senderData._id)} />
                                     ) : (
-                                      <div className="flex justify-center items-center bg-gradient-to-r from-green-500 to-emerald-500 rounded-full w-6 h-6"><User size={12} /></div>
+                                      <div className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-r', 'from-green-500', 'to-emerald-500', 'rounded-full', 'w-6', 'h-6')}><User size={12} /></div>
                                     )}
                                     <div>
-                                      <span className="font-medium text-green-400 text-sm">{senderData.firstName || "Unknown"} {senderData.lastName || ""}</span>
-                                      {senderData.username && (<span className="ml-1 text-gray-400 text-xs"> (@{senderData.username})</span>)}
+                                      <span className={cn('font-medium', 'text-green-400', 'text-sm')}>{senderData.firstName || "Unknown"} {senderData.lastName || ""}</span>
+                                      {senderData.username && (<span className={cn('ml-1', 'text-gray-400', 'text-xs')}> (@{senderData.username})</span>)}
                                     </div>
-                                    {msg.revealedAt && (<span className="text-gray-500 text-xs">• Revealed {new Date(msg.revealedAt).toLocaleDateString()}</span>)}
+                                    {msg.revealedAt && (<span className={cn('text-gray-500', 'text-xs')}>• Revealed {new Date(msg.revealedAt).toLocaleDateString()}</span>)}
                                   </motion.div>
                                 ) : (
-                                  <div className="inline-flex items-center gap-2 bg-yellow-500/10 px-3 py-1.5 rounded-lg text-yellow-400">
+                                  <div className={cn('inline-flex', 'items-center', 'gap-2', 'bg-yellow-500/10', 'px-3', 'py-1.5', 'rounded-lg', 'text-yellow-400')}>
                                     <Lock size={14} /><span className="text-sm">Anonymous Sender</span>
-                                    {userPlan === "pro" && !msg.isRevealed && (<span className="ml-1 text-cyan-400 text-xs">({REVEAL_COST} coins to reveal)</span>)}
+                                    {userPlan === "pro" && !msg.isRevealed && (<span className={cn('ml-1', 'text-cyan-400', 'text-xs')}>({REVEAL_COST} coins to reveal)</span>)}
                                   </div>
                                 )}
                               </div>
                             </div>
-                            <div className="flex gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-                              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); handleCopy(msg.content, msg._id); }} className="hover:bg-white/10 p-2 rounded-lg transition-all duration-200" title="Copy message">
+                            <div className={cn('flex', 'gap-1', 'opacity-70', 'group-hover:opacity-100', 'transition-opacity')}>
+                              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); handleCopy(msg.content, msg._id); }} className={cn('hover:bg-white/10', 'p-2', 'rounded-lg', 'transition-all', 'duration-200')} title="Copy message">
                                 {copiedId === msg._id ? <Check size={18} className="text-green-400" /> : <Copy size={18} />}
                               </motion.button>
                               <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); handleLike(msg._id); }} disabled={likingId === msg._id} className={`p-2 rounded-lg hover:bg-white/10 transition-all duration-200 disabled:opacity-50 ${msg.liked ? 'text-pink-500' : ''}`} title="Like">
-                                {likingId === msg._id ? (<div className="border-2 border-pink-400 border-t-transparent rounded-full w-5 h-5 animate-spin" />) : (<Heart size={18} fill={msg.liked ? "currentColor" : "none"} />)}
+                                {likingId === msg._id ? (<div className={cn('border-2', 'border-pink-400', 'border-t-transparent', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />) : (<Heart size={18} fill={msg.liked ? "currentColor" : "none"} />)}
                               </motion.button>
-                              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); handleDelete(msg._id); }} className="hover:bg-red-500/20 p-2 rounded-lg text-red-400 transition-all duration-200" title="Delete">
+                              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); handleDelete(msg._id); }} className={cn('hover:bg-red-500/20', 'p-2', 'rounded-lg', 'text-red-400', 'transition-all', 'duration-200')} title="Delete">
                                 <Trash2 size={18} />
                               </motion.button>
                               {!msg.isRevealed && (userPlan === "premium" || userPlan === "pro") && (
@@ -844,15 +846,15 @@ export default function Dashboard() {
                                 />
                               )}
                               {!msg.isRevealed && userPlan === "free" && (
-                                <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); navigate("/premium"); }} className="hover:bg-yellow-500/20 p-2 rounded-lg text-yellow-400 transition-all duration-200" title="Upgrade to reveal">
+                                <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); navigate("/premium"); }} className={cn('hover:bg-yellow-500/20', 'p-2', 'rounded-lg', 'text-yellow-400', 'transition-all', 'duration-200')} title="Upgrade to reveal">
                                   <Crown size={18} />
                                 </motion.button>
                               )}
                             </div>
                           </div>
                           {hoveredMessage === idx && !msg.isRevealed && userPlan === "free" && (
-                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="absolute inset-0 flex justify-center items-center bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-xl">
-                              <div className="text-center"><Crown size={32} className="mx-auto mb-2 text-yellow-400" /><p className="font-semibold text-sm">Upgrade to Premium</p><p className="text-gray-300 text-xs">Reveal who sent this message</p></div>
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={cn('absolute', 'inset-0', 'flex', 'justify-center', 'items-center', 'bg-gradient-to-r', 'from-purple-500/10', 'to-pink-500/10', 'backdrop-blur-sm', 'rounded-xl')}>
+                              <div className="text-center"><Crown size={32} className={cn('mx-auto', 'mb-2', 'text-yellow-400')} /><p className={cn('font-semibold', 'text-sm')}>Upgrade to Premium</p><p className={cn('text-gray-300', 'text-xs')}>Reveal who sent this message</p></div>
                             </motion.div>
                           )}
                         </motion.div>
@@ -861,12 +863,12 @@ export default function Dashboard() {
                   </AnimatePresence>
                 </div>
                 {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-3 mt-6 pt-4 border-white/10 border-t">
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="bg-white/10 hover:bg-white/20 disabled:opacity-50 p-2 rounded-lg transition-all duration-200 disabled:cursor-not-allowed">
+                  <div className={cn('flex', 'justify-center', 'items-center', 'gap-3', 'mt-6', 'pt-4', 'border-white/10', 'border-t')}>
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className={cn('bg-white/10', 'hover:bg-white/20', 'disabled:opacity-50', 'p-2', 'rounded-lg', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}>
                       <ChevronLeft size={20} />
                     </motion.button>
                     <span className="text-sm">Page {currentPage} of {totalPages}</span>
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="bg-white/10 hover:bg-white/20 disabled:opacity-50 p-2 rounded-lg transition-all duration-200 disabled:cursor-not-allowed">
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className={cn('bg-white/10', 'hover:bg-white/20', 'disabled:opacity-50', 'p-2', 'rounded-lg', 'transition-all', 'duration-200', 'disabled:cursor-not-allowed')}>
                       <ChevronRight size={20} />
                     </motion.button>
                   </div>
@@ -880,79 +882,79 @@ export default function Dashboard() {
       {/* Message Detail Modal - Keep original */}
       <AnimatePresence>
         {showMessageModal && selectedMessage && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="z-50 fixed inset-0 flex justify-center items-center bg-black/80 backdrop-blur-md p-4" onClick={() => setShowMessageModal(false)}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-gradient-to-br from-gray-900 to-black shadow-2xl border border-purple-500/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-              <button onClick={() => setShowMessageModal(false)} className="top-4 right-4 absolute bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-all duration-200"><X size={20} /></button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={cn('z-50', 'fixed', 'inset-0', 'flex', 'justify-center', 'items-center', 'bg-black/80', 'backdrop-blur-md', 'p-4')} onClick={() => setShowMessageModal(false)}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className={cn('relative', 'bg-gradient-to-br', 'from-gray-900', 'to-black', 'shadow-2xl', 'border', 'border-purple-500/30', 'rounded-2xl', 'w-full', 'max-w-2xl', 'max-h-[90vh]', 'overflow-y-auto')} onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowMessageModal(false)} className={cn('top-4', 'right-4', 'absolute', 'bg-white/10', 'hover:bg-white/20', 'p-2', 'rounded-lg', 'transition-all', 'duration-200')}><X size={20} /></button>
               <div className="p-6">
                 {/* Header Badges */}
-                <div className="flex flex-wrap justify-between items-start gap-3 mb-6">
-                  <div className="flex flex-wrap gap-2">
+                <div className={cn('flex', 'flex-wrap', 'justify-between', 'items-start', 'gap-3', 'mb-6')}>
+                  <div className={cn('flex', 'flex-wrap', 'gap-2')}>
                     <span className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${selectedMessage.isRevealed ? "bg-green-500/20 text-green-400 border border-green-500/50" : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/50"}`}>
                       {selectedMessage.isRevealed ? <Eye size={14} /> : <Lock size={14} />}{selectedMessage.isRevealed ? "Sender Revealed" : "Anonymous"}
                     </span>
-                    {selectedMessage.liked && (<span className="flex items-center gap-2 bg-pink-500/20 px-3 py-1.5 border border-pink-500/50 rounded-full text-pink-400 text-sm"><Heart size={14} fill="currentColor" /> Liked</span>)}
-                    {selectedMessage.isRevealed && selectedMessage.sender?.plan === "premium" && (<span className="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full text-white text-sm"><Crown size={14} /> Premium Sender</span>)}
-                    {selectedMessage.isRevealed && selectedMessage.sender?.plan === "pro" && (<span className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-1.5 rounded-full text-white text-sm"><Zap size={14} /> Pro Sender</span>)}
+                    {selectedMessage.liked && (<span className={cn('flex', 'items-center', 'gap-2', 'bg-pink-500/20', 'px-3', 'py-1.5', 'border', 'border-pink-500/50', 'rounded-full', 'text-pink-400', 'text-sm')}><Heart size={14} fill="currentColor" /> Liked</span>)}
+                    {selectedMessage.isRevealed && selectedMessage.sender?.plan === "premium" && (<span className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-yellow-500', 'to-orange-500', 'px-3', 'py-1.5', 'rounded-full', 'text-white', 'text-sm')}><Crown size={14} /> Premium Sender</span>)}
+                    {selectedMessage.isRevealed && selectedMessage.sender?.plan === "pro" && (<span className={cn('flex', 'items-center', 'gap-2', 'bg-gradient-to-r', 'from-cyan-500', 'to-blue-500', 'px-3', 'py-1.5', 'rounded-full', 'text-white', 'text-sm')}><Zap size={14} /> Pro Sender</span>)}
                   </div>
-                  <div className="flex items-center gap-2 text-gray-500 text-sm"><Hash size={14} /><span>ID: {selectedMessage._id?.slice(-8)}</span></div>
+                  <div className={cn('flex', 'items-center', 'gap-2', 'text-gray-500', 'text-sm')}><Hash size={14} /><span>ID: {selectedMessage._id?.slice(-8)}</span></div>
                 </div>
 
                 {/* Message Content */}
-                <div className="bg-white/5 mb-6 p-6 border border-white/10 rounded-xl">
-                  <div className="flex items-center gap-2 mb-4 text-purple-400"><MessageCircle size={18} /><span className="font-semibold">Message Content</span></div>
-                  <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">{selectedMessage.content || "No content"}</p>
+                <div className={cn('bg-white/5', 'mb-6', 'p-6', 'border', 'border-white/10', 'rounded-xl')}>
+                  <div className={cn('flex', 'items-center', 'gap-2', 'mb-4', 'text-purple-400')}><MessageCircle size={18} /><span className="font-semibold">Message Content</span></div>
+                  <p className={cn('text-gray-200', 'leading-relaxed', 'whitespace-pre-wrap')}>{selectedMessage.content || "No content"}</p>
                 </div>
 
                 {/* Sender Info */}
                 {selectedMessage.isRevealed && selectedMessage.sender ? (
-                  <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 mb-6 p-6 border border-green-500/30 rounded-xl">
-                    <div className="flex items-center gap-2 mb-4 text-green-400"><User size={18} /><span className="font-semibold">Sender Information</span></div>
-                    <div className="flex items-start gap-4">
+                  <div className={cn('bg-gradient-to-r', 'from-green-500/10', 'to-emerald-500/10', 'mb-6', 'p-6', 'border', 'border-green-500/30', 'rounded-xl')}>
+                    <div className={cn('flex', 'items-center', 'gap-2', 'mb-4', 'text-green-400')}><User size={18} /><span className="font-semibold">Sender Information</span></div>
+                    <div className={cn('flex', 'items-start', 'gap-4')}>
                       <div className="flex-shrink-0">
-                        {selectedMessage.sender.profilePic ? (<img src={getImageUrl(selectedMessage.sender.profilePic)} alt={selectedMessage.sender.firstName} className="border-2 border-green-500 rounded-full w-16 h-16 object-cover" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />) : (<div className="flex justify-center items-center bg-gradient-to-r from-green-500 to-emerald-500 rounded-full w-16 h-16"><User size={32} /></div>)}
+                        {selectedMessage.sender.profilePic ? (<img src={getImageUrl(selectedMessage.sender.profilePic)} alt={selectedMessage.sender.firstName} className={cn('border-2', 'border-green-500', 'rounded-full', 'w-16', 'h-16', 'object-cover')} onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />) : (<div className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-r', 'from-green-500', 'to-emerald-500', 'rounded-full', 'w-16', 'h-16')}><User size={32} /></div>)}
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-green-400 text-xl">{selectedMessage.sender.firstName} {selectedMessage.sender.lastName || ""}</h3>
-                        <div className="space-y-1 mt-2 text-sm">
-                          {selectedMessage.sender.username && (<div className="flex items-center gap-2 text-gray-300"><AtSign size={14} className="text-gray-500" /><span>@{selectedMessage.sender.username}</span></div>)}
-                          {selectedMessage.sender.email && (<div className="flex items-center gap-2 text-gray-300"><Mail size={14} className="text-gray-500" /><span>{selectedMessage.sender.email}</span></div>)}
-                          {selectedMessage.sender.plan && (<div className="flex items-center gap-2 text-gray-300"><Crown size={14} className="text-yellow-500" /><span className="capitalize">{selectedMessage.sender.plan} Member</span></div>)}
+                        <h3 className={cn('font-bold', 'text-green-400', 'text-xl')}>{selectedMessage.sender.firstName} {selectedMessage.sender.lastName || ""}</h3>
+                        <div className={cn('space-y-1', 'mt-2', 'text-sm')}>
+                          {selectedMessage.sender.username && (<div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}><AtSign size={14} className="text-gray-500" /><span>@{selectedMessage.sender.username}</span></div>)}
+                          {selectedMessage.sender.email && (<div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}><Mail size={14} className="text-gray-500" /><span>{selectedMessage.sender.email}</span></div>)}
+                          {selectedMessage.sender.plan && (<div className={cn('flex', 'items-center', 'gap-2', 'text-gray-300')}><Crown size={14} className="text-yellow-500" /><span className="capitalize">{selectedMessage.sender.plan} Member</span></div>)}
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-yellow-500/10 mb-6 p-6 border border-yellow-500/30 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="flex justify-center items-center bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full w-12 h-12"><Lock size={20} /></div>
-                      <div className="flex-1"><p className="font-semibold text-yellow-400">Anonymous Sender</p><p className="mt-1 text-gray-400 text-sm">{userPlan === "premium" ? "Click the Reveal button to see who sent this message" : userPlan === "pro" ? `Reveal sender for ${REVEAL_COST} coins` : "Upgrade to Premium or Pro to reveal the sender"}</p></div>
+                  <div className={cn('bg-yellow-500/10', 'mb-6', 'p-6', 'border', 'border-yellow-500/30', 'rounded-xl')}>
+                    <div className={cn('flex', 'items-center', 'gap-3')}>
+                      <div className={cn('flex', 'justify-center', 'items-center', 'bg-gradient-to-r', 'from-yellow-500', 'to-orange-500', 'rounded-full', 'w-12', 'h-12')}><Lock size={20} /></div>
+                      <div className="flex-1"><p className={cn('font-semibold', 'text-yellow-400')}>Anonymous Sender</p><p className={cn('mt-1', 'text-gray-400', 'text-sm')}>{userPlan === "premium" ? "Click the Reveal button to see who sent this message" : userPlan === "pro" ? `Reveal sender for ${REVEAL_COST} coins` : "Upgrade to Premium or Pro to reveal the sender"}</p></div>
                     </div>
                   </div>
                 )}
 
                 {/* Coins Section */}
                 {!selectedMessage.isRevealed && (
-                  <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 mb-4 p-4 border border-yellow-500/30 rounded-xl">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-yellow-500/20 p-2 rounded-lg"><Coins size={20} className="text-yellow-400" /></div>
-                        <div><p className="font-semibold text-yellow-400 text-sm">Reveal Cost</p><p className="font-bold text-white text-xl">{REVEAL_COST} Coins</p></div>
+                  <div className={cn('bg-gradient-to-r', 'from-yellow-500/10', 'to-orange-500/10', 'mb-4', 'p-4', 'border', 'border-yellow-500/30', 'rounded-xl')}>
+                    <div className={cn('flex', 'justify-between', 'items-center')}>
+                      <div className={cn('flex', 'items-center', 'gap-3')}>
+                        <div className={cn('bg-yellow-500/20', 'p-2', 'rounded-lg')}><Coins size={20} className="text-yellow-400" /></div>
+                        <div><p className={cn('font-semibold', 'text-yellow-400', 'text-sm')}>Reveal Cost</p><p className={cn('font-bold', 'text-white', 'text-xl')}>{REVEAL_COST} Coins</p></div>
                       </div>
-                      <div className="text-right"><p className="text-gray-400 text-xs">Your Balance</p><div className="flex items-center gap-2"><Coins size={16} className="text-yellow-400" /><span className="font-bold text-white text-xl">{user?.coins || 0}</span></div></div>
+                      <div className="text-right"><p className={cn('text-gray-400', 'text-xs')}>Your Balance</p><div className={cn('flex', 'items-center', 'gap-2')}><Coins size={16} className="text-yellow-400" /><span className={cn('font-bold', 'text-white', 'text-xl')}>{user?.coins || 0}</span></div></div>
                     </div>
                     {userPlan === "pro" && (user?.coins || 0) < REVEAL_COST && (
                       <div className="mt-3">
-                        <div className="flex justify-between mb-1 text-gray-400 text-xs"><span>Need {REVEAL_COST - (user?.coins || 0)} more coins</span><span>Watch ads to earn</span></div>
-                        <div className="bg-white/10 rounded-full h-1.5 overflow-hidden"><div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full h-full" style={{ width: `${((user?.coins || 0) / REVEAL_COST) * 100}%` }} /></div>
+                        <div className={cn('flex', 'justify-between', 'mb-1', 'text-gray-400', 'text-xs')}><span>Need {REVEAL_COST - (user?.coins || 0)} more coins</span><span>Watch ads to earn</span></div>
+                        <div className={cn('bg-white/10', 'rounded-full', 'h-1.5', 'overflow-hidden')}><div className={cn('bg-gradient-to-r', 'from-yellow-500', 'to-orange-500', 'rounded-full', 'h-full')} style={{ width: `${((user?.coins || 0) / REVEAL_COST) * 100}%` }} /></div>
                       </div>
                     )}
                   </div>
                 )}
 
                 {/* Message Details */}
-                <div className="bg-white/5 mb-6 p-6 border border-white/10 rounded-xl">
-                  <div className="flex items-center gap-2 mb-4 text-gray-400"><Clock size={18} /><span className="font-semibold">Message Details</span></div>
-                  <div className="gap-4 grid grid-cols-2 text-sm">
+                <div className={cn('bg-white/5', 'mb-6', 'p-6', 'border', 'border-white/10', 'rounded-xl')}>
+                  <div className={cn('flex', 'items-center', 'gap-2', 'mb-4', 'text-gray-400')}><Clock size={18} /><span className="font-semibold">Message Details</span></div>
+                  <div className={cn('gap-4', 'grid', 'grid-cols-2', 'text-sm')}>
                     <div><p className="text-gray-500">Sent</p><p className="text-gray-300">{formatFullDate(selectedMessage.createdAt)}</p></div>
                     {selectedMessage.revealedAt && (<div><p className="text-gray-500">Revealed</p><p className="text-gray-300">{formatFullDate(selectedMessage.revealedAt)}</p></div>)}
                     <div><p className="text-gray-500">Message Length</p><p className="text-gray-300">{selectedMessage.content?.length || 0} characters</p></div>
@@ -961,21 +963,21 @@ export default function Dashboard() {
                 </div>
 
                 {/* Action Buttons in Modal */}
-                <div className="flex flex-wrap gap-3">
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleCopy(selectedMessage.content, selectedMessage._id)} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-all duration-200">
+                <div className={cn('flex', 'flex-wrap', 'gap-3')}>
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleCopy(selectedMessage.content, selectedMessage._id)} className={cn('flex', 'items-center', 'gap-2', 'bg-white/10', 'hover:bg-white/20', 'px-4', 'py-2', 'rounded-lg', 'transition-all', 'duration-200')}>
                     {copiedId === selectedMessage._id ? <Check size={18} className="text-green-400" /> : <Copy size={18} />}{copiedId === selectedMessage._id ? "Copied" : "Copy Message"}
                   </motion.button>
                   <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleLike(selectedMessage._id)} disabled={likingId === selectedMessage._id} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${selectedMessage.liked ? "bg-pink-500/20 text-pink-400" : "bg-white/10 hover:bg-white/20"} disabled:opacity-50`}>
-                    {likingId === selectedMessage._id ? (<div className="border-2 border-pink-400 border-t-transparent rounded-full w-5 h-5 animate-spin" />) : (<Heart size={18} fill={selectedMessage.liked ? "currentColor" : "none"} />)}{selectedMessage.liked ? "Liked" : "Like"}
+                    {likingId === selectedMessage._id ? (<div className={cn('border-2', 'border-pink-400', 'border-t-transparent', 'rounded-full', 'w-5', 'h-5', 'animate-spin')} />) : (<Heart size={18} fill={selectedMessage.liked ? "currentColor" : "none"} />)}{selectedMessage.liked ? "Liked" : "Like"}
                   </motion.button>
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleDelete(selectedMessage._id)} className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded-lg text-red-400 transition-all duration-200"><Trash2 size={18} /> Delete</motion.button>
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleDelete(selectedMessage._id)} className={cn('flex', 'items-center', 'gap-2', 'bg-red-500/10', 'hover:bg-red-500/20', 'px-4', 'py-2', 'rounded-lg', 'text-red-400', 'transition-all', 'duration-200')}><Trash2 size={18} /> Delete</motion.button>
                   {!selectedMessage.isRevealed && userPlan === "pro" && (user?.coins || 0) < REVEAL_COST && (
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => { setShowAdModal(true); setShowMessageModal(false); }} className="flex items-center gap-2 bg-yellow-500/10 hover:bg-yellow-500/20 px-4 py-2 rounded-lg text-yellow-400 transition-all duration-200">
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => { setShowAdModal(true); setShowMessageModal(false); }} className={cn('flex', 'items-center', 'gap-2', 'bg-yellow-500/10', 'hover:bg-yellow-500/20', 'px-4', 'py-2', 'rounded-lg', 'text-yellow-400', 'transition-all', 'duration-200')}>
                       <Video size={16} /> Watch Ad (+5 coins)
                     </motion.button>
                   )}
                   {!selectedMessage.isRevealed && userPlan === "free" && (
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/premium")} className="flex items-center gap-2 bg-purple-500/10 hover:bg-purple-500/20 px-4 py-2 rounded-lg text-purple-400 transition-all duration-200">
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/premium")} className={cn('flex', 'items-center', 'gap-2', 'bg-purple-500/10', 'hover:bg-purple-500/20', 'px-4', 'py-2', 'rounded-lg', 'text-purple-400', 'transition-all', 'duration-200')}>
                       <Crown size={18} /> Upgrade to Reveal
                     </motion.button>
                   )}
