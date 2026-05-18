@@ -474,33 +474,25 @@ export default function Dashboard() {
       </div>
 
       {/* Floating Particles */}
-      <div className={cn('z-0', 'fixed', 'inset-0', 'pointer-events-none')}>
-        {[...Array(80)].map((_, i) => (
-          <motion.div
-            key={i}
-            className={cn('absolute', 'rounded-full')}
-            style={{
-              width: Math.random() * 3 + 1 + "px",
-              height: Math.random() * 3 + 1 + "px",
-              background: `radial-gradient(circle, ${['#a855f7', '#ec4899', '#06b6d4', '#10b981', '#f59e0b'][i % 5]}${Math.floor(Math.random() * 50 + 30).toString(16)})`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              boxShadow: `0 0 ${Math.random() * 10 + 5}px currentColor`
-            }}
-            animate={{
-              y: [0, -60, 0, 60, 0],
-              x: [0, 40, 0, -40, 0],
-              opacity: [0.2, 0.7, 0.2],
-              scale: [1, 1.3, 1]
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-      </div>
+     {/* ✨ CSS Stars Background - بتملى الشاشة كلها */}
+<div className="stars">
+  {[...Array(500)].map((_, i) => (
+    <div
+      key={i}
+      className="star"
+      style={{
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        width: `${Math.random() * 3 + 1}px`,
+        height: `${Math.random() * 3 + 1}px`,
+        animationDelay: `${Math.random() * 5}s`,
+        animationDuration: `${Math.random() * 3 + 1}s`,
+        backgroundColor: ['#ffffff', '#a855f7', '#ec4899', '#06b6d4', '#f59e0b'][Math.floor(Math.random() * 5)],
+        boxShadow: `0 0 ${Math.random() * 5 + 2}px ${['#a855f7', '#ec4899', '#06b6d4', '#f59e0b'][Math.floor(Math.random() * 4)]}`
+      }}
+    />
+  ))}
+</div>
 
       <AnimatePresence>
         {showSparkles && (
